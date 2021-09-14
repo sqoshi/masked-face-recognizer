@@ -70,4 +70,5 @@ class DatasetReader:
             )
         cprint(f"Dataset consist {len(self.filtered.groupby('identity'))} identities.", "green")
         draw_bar_diagram(self.filtered)
+        print(self.filtered.sort_values("identity"))
         return self.filtered
