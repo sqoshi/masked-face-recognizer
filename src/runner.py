@@ -1,6 +1,6 @@
 from preanalysis.analyzer import DatasetReader
 from src.preanalysis.dataclasses import DatasetConfig
-from src.predictions.face_detector import FaceDetector
+from src.predictions.extractor import FaceExtractor
 
 if __name__ == '__main__':
     # TODO: prepare table with statistics -> top1 - > acc  + top5 - > acc
@@ -11,5 +11,6 @@ if __name__ == '__main__':
     )
     dataset_df = da.read(25, equalize=True)
 
-    fd = FaceDetector(dataset_df)
-    fd.detect()
+    fd = FaceExtractor(dataset_df)
+    fd.extract()
+    fd.save()
