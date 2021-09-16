@@ -1,5 +1,5 @@
 import os
-from typing import Union, List, Optional
+from typing import Optional
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -38,7 +38,6 @@ class DatasetReader:
         else:
             images = list(list_images(dataset_config.directory_fp))
             self.identities = [path.split(os.sep)[-2] for path in images]
-            print(len(images), len(self.identities))
             self.filtered = pd.DataFrame(list(zip(images, self.identities)), columns=self.column_names)
 
     def select_images(self, n: int) -> pd.DataFrame:

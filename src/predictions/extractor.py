@@ -6,9 +6,9 @@ import imutils
 import numpy as np
 import pandas as pd
 import warnings
-from _dlib_pybind11 import get_frontal_face_detector
 from termcolor import cprint
 
+from src.predictions.embedder import Embedder
 from src.predictions.face_detector import FaceDetector
 from src.predictions.image import Image
 
@@ -64,29 +64,29 @@ def crop(image: Image, rect: dlib.rectangle) -> np.ndarray:
     return image.obj[rect.top():rect.bottom(), rect.left():rect.right()]
 
 
-class FaceExtractor(FaceDetector):
-    def __init__(self, dataset_df: pd.DataFrame, embedder_fp="../models/nn4.small2.v1.t7", face_size=(96, 96)) -> None:
-        super().__init__()
+class FaceExtractor(FaceDetector, Embedder):
+    def __init__(self, dataset_df: pd.DataFrame) -> None:
+        FaceDetector.__init__(self)  # explicit calls without super
+        Embedder.__init__(self)
         self.dataset_df = dataset_df
-        self._embedder = cv2.dnn.readNetFromTorch(embedder_fp)
-        self.target_size = face_size
         self._embeddings = {"vectors": [], "classes": []}
 
     def save(self, fn="../face_vectors.pickle"):
         with open(fn, 'wb') as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def vector(self, face_crop):
-        face_blob = cv2.dnn.blobFromImage(face_crop, 1.0 / 255, self.target_size, (0, 0, 0), swapRB=True, crop=False)
-        self._embedder.setInput(face_blob)
-        vec = self._embedder.forward()
-        cprint(f"Face vector shape is {vec.shape}.", "yellow")
-        return vec.flatten()
+    # def vector(self, face_crop):
+    #     face_blob = cv2.dnn.blobFromImage(face_crop, 1.0 / 255, self._embedder_input_shape, (0, 0, 0), swapRB=True,
+    #                                       crop=False)
+    #     self._embedder.setInput(face_blob)
+    #     vec = self._embedder.forward()
+    #     cprint(f"Face vector shape is {vec.shape}.", "yellow")
+    #     return vec.flatten()
 
     def extract(self):
         for index, row in self.dataset_df.iterrows():
             img = Image(row['filename'], row['identity'])
-            cprint(img, "green")
+            # cprint(img, "green")
             face_rectangles = self._detector(img.obj, 1)
             warn_detections(face_rectangles)
             # draw_sample(img.obj, face_rectangles, True)

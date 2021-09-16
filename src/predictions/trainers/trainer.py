@@ -29,6 +29,6 @@ class Trainer(ABC):
     def train(self):
         pass
 
-    def store_model(self, fp="../svm_model.h5"):
+    def store_model(self, fp="../model.h5"):
         with open(fp, 'wb') as fw:
-            pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self._model, fw, protocol=pickle.HIGHEST_PROTOCOL)
