@@ -12,5 +12,5 @@ class Embedder:
                                           crop=False)
         self._embedder.setInput(face_blob)
         vec = self._embedder.forward()
-        cprint(f"Face vector shape is {vec.shape}.", "yellow")
-        return vec.flatten()
+        # cprint(f"Face vector shape is {vec.shape}.", "yellow")
+        return vec

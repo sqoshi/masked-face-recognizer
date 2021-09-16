@@ -1,6 +1,8 @@
 import pickle
 from abc import ABC, abstractmethod
 
+from sklearn.preprocessing import LabelEncoder
+
 
 def read_pickle(path: str):
     with open(path, "rb") as fr:

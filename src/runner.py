@@ -19,14 +19,14 @@ if __name__ == '__main__':
     )
     train_set = da2.read(1, equalize=True)
 
-
-    fd = FaceExtractor(dataset_df)
-    embs = fd.extract()
-    fd.save()
-
+    # fd = FaceExtractor(dataset_df)
+    # embs = fd.extract()
+    # fd.save()
+    embs = "../face_vectors.pickle"
     t = SVMTrainer(embs)
     m = t.train()
+    label_coder = t.label_encoder
     t.store_model()
 
-    fr = FaceRecognizer(m,train_set)
+    fr = FaceRecognizer(m, train_set, label_coder)
     fr.recognize()

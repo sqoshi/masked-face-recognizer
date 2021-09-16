@@ -85,6 +85,7 @@ class FaceExtractor(FaceDetector, Embedder):
 
     def extract(self):
         for index, row in self.dataset_df.iterrows():
+            cprint(f"Extracting ({index}/{len(self.dataset_df)}) ...", "green")
             img = Image(row['filename'], row['identity'])
             # cprint(img, "green")
             face_rectangles = self._detector(img.obj, 1)
@@ -95,7 +96,7 @@ class FaceExtractor(FaceDetector, Embedder):
                 continue
             rect = biggest_surface(face_rectangles)
             face_crop = crop(img, rect)
-            embeddings_vec = self.vector(face_crop)
+            embeddings_vec = self.vector(face_crop).flatten()
             self._embeddings["vectors"].append(embeddings_vec)
             self._embeddings["classes"].append(img.identity)
         return self._embeddings
