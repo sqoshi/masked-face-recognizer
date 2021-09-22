@@ -1,12 +1,12 @@
 import os
-from typing import Optional
+from typing import Optional, Tuple
 
 import pandas as pd
 import matplotlib.pyplot as plt
 from imutils.paths import list_images
 from termcolor import cprint
 
-from src.preanalysis.dataclasses import DatasetConfig
+from src.preanalysis.defs import DatasetConfig
 
 
 def draw_bar_diagram(df: pd.DataFrame) -> None:
@@ -62,12 +62,21 @@ class DatasetReader:
 
         return result
 
+    @staticmethod
+    def split_dataset(dataset_df: pd.DataFrame, ratio: float = 0.8) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        images_per_person = min(dataset_df["identity"].value_counts().values.tolist())
+        train_limit = round(images_per_person * ratio)
+        train_set = dataset_df.groupby("identity").head(train_limit)
+        test_set = dataset_df[~dataset_df.index.isin(train_set.index)]
+        return train_set, test_set
+
     def read(self, images_per_person: Optional[int] = None, equalize: bool = True) -> pd.DataFrame:
+
         if equalize:
             self.filtered = self.select_images(
                 self.images_per_person if images_per_person is None else images_per_person
             )
         cprint(f"Dataset consist {len(self.filtered.groupby('identity'))} identities.", "green")
         draw_bar_diagram(self.filtered)
-        print(self.filtered.sort_values("identity"))
+        self.split_dataset(self.filtered)
         return self.filtered
