@@ -13,17 +13,19 @@ if __name__ == '__main__':
     # )
     # dataset_df = da.read(8, equalize=True)
     dfr = DatasetReader(
-        DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/original", None),
-        # DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/celeba/img_align_celeba",
-        #               "/home/piotr/Documents/bsc-thesis/datasets/celeba/identity_CelebA.txt")
+        # DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/original", None),
+        DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/celeba/img_align_celeba",
+                      "/home/piotr/Documents/bsc-thesis/datasets/celeba/identity_CelebA.txt")
     )
-    dataset = dfr.read(equalize=True)
-    train_set, test_set = dfr.split_dataset(dataset)
 
+    dataset = dfr.read(25, equalize=True)
+    train_set, test_set = dfr.split_dataset(dataset)
+    print(f"{len(dataset)} == {len(train_set)} + {len(test_set)}")
     fd = FaceExtractor(train_set)
     embs = fd.extract()
     fd.save()
     # embs = "../face_vectors.pickle"
+    
     t = SVMTrainer(embs)
     m = t.train()
     label_coder = t.label_encoder

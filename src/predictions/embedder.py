@@ -1,3 +1,5 @@
+import traceback
+
 import cv2
 from termcolor import cprint
 
@@ -8,9 +10,14 @@ class Embedder:
         self._embedder_input_shape = input_shape
 
     def vector(self, face_crop):
-        face_blob = cv2.dnn.blobFromImage(face_crop, 1.0 / 255, self._embedder_input_shape, (0, 0, 0), swapRB=True,
-                                          crop=False)
-        self._embedder.setInput(face_blob)
-        vec = self._embedder.forward()
-        # cprint(f"Face vector shape is {vec.shape}.", "yellow")
-        return vec
+        try:
+            face_blob = cv2.dnn.blobFromImage(face_crop, 1.0 / 255, self._embedder_input_shape, (0, 0, 0), swapRB=True,
+                                              crop=False)
+            self._embedder.setInput(face_blob)
+            vec = self._embedder.forward()
+            # cprint(f"Face vector shape is {vec.shape}.", "yellow")
+            return vec
+        except:
+            print(face_crop.shape)
+            cv2.imshow("Error image", face_crop)
+            traceback.print_exc()

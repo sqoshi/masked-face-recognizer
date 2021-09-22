@@ -28,6 +28,7 @@ def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
     biggest_rect = None
     for rect in rectangles:
         x, y, w, h = rect_to_bb(rect)
+        print(w, h, w * h, surface)
         if w * h > surface:
             biggest_rect = rect
     return biggest_rect
@@ -55,7 +56,7 @@ def draw_sample(image, rect_list, crop_face=False, delay=1):
 
 def warn_detections(face_detections: dlib.rectangles) -> None:
     if len(face_detections) > 1:
-        warnings.warn(f"Detected {len(face_detections)} faces on image.")
+        warnings.warn(f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
     elif len(face_detections) == 0:
         warnings.warn("Could not detect face on image.")
 
@@ -87,8 +88,9 @@ class FaceExtractor(FaceDetector, Embedder):
         for index, row in self.dataset_df.iterrows():
             cprint(f"Extracting ({index}/{len(self.dataset_df)}) ...", "green")
             img = Image(row['filename'], row['identity'])
-            # cprint(img, "green")
+            print(img)
             face_rectangles = self._detector(img.obj, 1)
+            print(face_rectangles)
             warn_detections(face_rectangles)
             # draw_sample(img.obj, face_rectangles, True)
             # todo: adjust rectangle
