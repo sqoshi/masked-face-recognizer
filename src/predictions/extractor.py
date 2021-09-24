@@ -1,3 +1,4 @@
+import logging
 import pickle
 
 import cv2
@@ -8,9 +9,11 @@ import pandas as pd
 import warnings
 from termcolor import cprint
 
-from src.predictions.embedder import Embedder
-from src.predictions.face_detector import FaceDetector
-from src.predictions.image import Image
+from predictions.embedder import Embedder
+from predictions.face_detector import FaceDetector
+from predictions.image import Image
+
+logger = logging.getLogger(__name__)
 
 
 def rect_to_bb(rect: dlib.rectangle):
@@ -22,15 +25,24 @@ def rect_to_bb(rect: dlib.rectangle):
     return x, y, w, h
 
 
+def fix_rect(rect: dlib.rectangle):
+    return dlib.rectangle(
+        top=nn(rect.top()),
+        bottom=nn(rect.bottom()),
+        left=nn(rect.left()),
+        right=nn(rect.right())
+    )
+
+
 def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
-    # cprint("Selecting rectangle with biggest surface.", "yellow")
-    surface = 0
+    logger.info("Selecting face rectangle with biggest area.")
+    biggest_surf = 0
     biggest_rect = None
     for rect in rectangles:
-        x, y, w, h = rect_to_bb(rect)
-        print(w, h, w * h, surface)
-        if w * h > surface:
+        rect = fix_rect(rect)
+        if rect.area() > biggest_surf:
             biggest_rect = rect
+            biggest_surf = rect.area()
     return biggest_rect
 
 
@@ -56,9 +68,14 @@ def draw_sample(image, rect_list, crop_face=False, delay=1):
 
 def warn_detections(face_detections: dlib.rectangles) -> None:
     if len(face_detections) > 1:
-        warnings.warn(f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
+        logger.warning(f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
     elif len(face_detections) == 0:
-        warnings.warn("Could not detect face on image.")
+        logger.warning("Could not detect face on image.")
+
+
+def nn(value: int) -> int:
+    """cast value to closest non negative value"""
+    return 0 if value < 0 else value
 
 
 def crop(image: Image, rect: dlib.rectangle) -> np.ndarray:
@@ -73,26 +90,17 @@ class FaceExtractor(FaceDetector, Embedder):
         self._embeddings = {"vectors": [], "classes": []}
 
     def save(self, fn="../face_vectors.pickle"):
+        logger.info("Saving embeddings to %s." % fn)
         with open(fn, 'wb') as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # def vector(self, face_crop):
-    #     face_blob = cv2.dnn.blobFromImage(face_crop, 1.0 / 255, self._embedder_input_shape, (0, 0, 0), swapRB=True,
-    #                                       crop=False)
-    #     self._embedder.setInput(face_blob)
-    #     vec = self._embedder.forward()
-    #     cprint(f"Face vector shape is {vec.shape}.", "yellow")
-    #     return vec.flatten()
-
     def extract(self):
-        for index, row in self.dataset_df.iterrows():
-            cprint(f"Extracting ({index}/{len(self.dataset_df)}) ...", "green")
+        logger.info("Extracting embeddings")
+        for index, row in self.dataset_df.reset_index(drop=True).iterrows():
+            logger.info(f"Extracting (%s/%s) ...", index, len(self.dataset_df))
             img = Image(row['filename'], row['identity'])
-            print(img)
             face_rectangles = self._detector(img.obj, 1)
-            print(face_rectangles)
             warn_detections(face_rectangles)
-            # draw_sample(img.obj, face_rectangles, True)
             # todo: adjust rectangle
             if not face_rectangles:
                 continue

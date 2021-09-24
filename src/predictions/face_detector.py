@@ -1,7 +1,5 @@
 from _dlib_pybind11 import get_frontal_face_detector
 
-from src.predictions.image import Image
-
 
 class FaceDetector:
     def __init__(self):

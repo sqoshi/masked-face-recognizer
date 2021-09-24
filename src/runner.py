@@ -1,17 +1,17 @@
+import logging
+import coloredlogs
+
 from preanalysis.analyzer import DatasetReader
-from src.preanalysis.defs import DatasetConfig
-from src.predictions.extractor import FaceExtractor
-from src.predictions.face_recognizer import FaceRecognizer
-from src.predictions.trainers.svm_trainer import SVMTrainer
+from preanalysis.defs import DatasetConfig
+from predictions.extractor import FaceExtractor
+from predictions.face_recognizer import FaceRecognizer
+from predictions.trainers.svm_trainer import SVMTrainer
+
+logger = logging.getLogger(__name__)
+coloredlogs.install(level="DEBUG")
 
 if __name__ == '__main__':
-    # TODO: prepare table with statistics -> top1 - > acc  + top5 - > acc
-    # da = DatasetReader(
-    #     DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/original", None),
-    #     # DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/celeba/img_align_celeba",
-    #     #               "/home/piotr/Documents/bsc-thesis/datasets/celeba/identity_CelebA.txt")
-    # )
-    # dataset_df = da.read(8, equalize=True)
+    logger.info("Program started.")
     dfr = DatasetReader(
         # DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/original", None),
         DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/celeba/img_align_celeba",
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     embs = fd.extract()
     fd.save()
     # embs = "../face_vectors.pickle"
-    
+
     t = SVMTrainer(embs)
     m = t.train()
     label_coder = t.label_encoder
@@ -33,3 +33,4 @@ if __name__ == '__main__':
 
     fr = FaceRecognizer(m, test_set, label_coder)
     fr.recognize()
+    logger.info("Program ended.")

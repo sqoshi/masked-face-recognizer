@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 from termcolor import cprint
 
-from src.predictions.embedder import Embedder
-from src.predictions.extractor import warn_detections, biggest_surface, crop
-from src.predictions.face_detector import FaceDetector
-from src.predictions.image import Image
+from predictions.embedder import Embedder
+from predictions.extractor import warn_detections, biggest_surface, crop
+from predictions.face_detector import FaceDetector
+from predictions.image import Image
 
 
 class FaceRecognizer(FaceDetector, Embedder):
@@ -20,12 +20,8 @@ class FaceRecognizer(FaceDetector, Embedder):
     def update_stats(self, predictions, correct_identity, stats):
         arr = np.array(predictions)
         top5_indexes = arr.argsort()[-5:][::-1]
-        # print(top5_indexes)
-        # proba = preds[j]
         classes = [self.label_encoder.classes_[j] for j in top5_indexes]
         probs = [predictions[idx] for idx in top5_indexes]
-        # print(classes)
-        # print(probs)
         if correct_identity in classes:
             if probs[classes.index(correct_identity)] == max(probs):
                 cprint(f"Perfect match id {correct_identity} has best prob.", "green")

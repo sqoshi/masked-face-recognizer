@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Optional, Tuple
 
@@ -6,7 +7,9 @@ import matplotlib.pyplot as plt
 from imutils.paths import list_images
 from termcolor import cprint
 
-from src.preanalysis.defs import DatasetConfig
+from preanalysis.defs import DatasetConfig
+
+logger = logging.getLogger(__name__)
 
 
 def draw_bar_diagram(df: pd.DataFrame) -> None:
@@ -21,9 +24,11 @@ class DatasetReader:
         self.images_per_person = min_images_per_person
         self.dataset_path = dataset_config.directory_fp
         self.column_names = ["filename", "identity"]
+        logger.info("Dataset path '%s'" % self.dataset_path)
 
         # count images per person
         if dataset_config.identities_fp:
+            logger.info("Identities file found.")
             self.df = pd.read_csv(dataset_config.identities_fp, sep=" ", index_col=False, names=self.column_names)
             self.statistics = self.df["identity"].value_counts()[
                 (self.df["identity"].value_counts() >= min_images_per_person)
@@ -36,6 +41,7 @@ class DatasetReader:
                 cprint(f"There is not enough images per person for your demand `{min_images_per_person}`."
                        f" Max is {self.statistics.max()}", "yellow")
         else:
+            logger.info("Identities collected from directories names.")
             images = list(list_images(dataset_config.directory_fp))
             self.identities = [path.split(os.sep)[-2] for path in images]
             self.filtered = pd.DataFrame(list(zip(images, self.identities)), columns=self.column_names)
@@ -57,13 +63,14 @@ class DatasetReader:
                 result = pd.concat([result, personal_images], ignore_index=True)
 
         if len(set(result["identity"].value_counts().values.tolist())) != 1:
-            cprint(f"Something went wrong! You chose `equality` option,"
-                   f" but personal images quantities are not equal.", "yellow")
+            logger.warning(f"Something went wrong! You chose `equality` option,"
+                           f" but personal images quantities are not equal.", "yellow")
 
         return result
 
     @staticmethod
     def split_dataset(dataset_df: pd.DataFrame, ratio: float = 0.8) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        logger.info(f"Splitting dataset into train and tests subsets with ratio = %s.", ratio)
         images_per_person = min(dataset_df["identity"].value_counts().values.tolist())
         train_limit = round(images_per_person * ratio)
         train_set = dataset_df.groupby("identity").head(train_limit)
@@ -73,10 +80,11 @@ class DatasetReader:
     def read(self, images_per_person: Optional[int] = None, equalize: bool = True) -> pd.DataFrame:
 
         if equalize:
+            logger.info("Reading %s per person." % images_per_person)
             self.filtered = self.select_images(
                 self.images_per_person if images_per_person is None else images_per_person
             )
-        cprint(f"Dataset consist {len(self.filtered.groupby('identity'))} identities.", "green")
-        draw_bar_diagram(self.filtered)
-        self.split_dataset(self.filtered)
+
+        logger.info(f"Dataset consist %s identities." % len(self.filtered.groupby('identity')))
+        # draw_bar_diagram(self.filtered)
         return self.filtered
