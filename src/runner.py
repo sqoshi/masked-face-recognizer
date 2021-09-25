@@ -8,7 +8,11 @@ from predictions.face_recognizer import FaceRecognizer
 from predictions.trainers.svm_trainer import SVMTrainer
 
 logger = logging.getLogger(__name__)
-coloredlogs.install(level="DEBUG")
+coloredlogs.install(
+    filename="decoder.log",
+    filemode='a',
+    level="DEBUG"
+)
 
 if __name__ == '__main__':
     logger.info("Program started.")

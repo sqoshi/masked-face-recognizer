@@ -1,3 +1,4 @@
+import csv
 import logging
 import os
 from typing import Optional, Tuple
@@ -30,16 +31,16 @@ class DatasetReader:
         if dataset_config.identities_fp:
             logger.info("Identities file found.")
             self.df = pd.read_csv(dataset_config.identities_fp, sep=" ", index_col=False, names=self.column_names)
-            self.statistics = self.df["identity"].value_counts()[
+            statistics = self.df["identity"].value_counts()[
                 (self.df["identity"].value_counts() >= min_images_per_person)
             ]
-            self.identities = self.statistics.keys().tolist()
+            self.identities = statistics.keys().tolist()
             self.filtered = self.df.loc[self.df["identity"].isin(self.identities)].copy()
             self.filtered["filename"] = self.filtered["filename"].apply(
                 lambda x: os.path.join(self.dataset_path, str(x)))
-            if self.statistics.max() < min_images_per_person:
+            if statistics.max() < min_images_per_person:
                 cprint(f"There is not enough images per person for your demand `{min_images_per_person}`."
-                       f" Max is {self.statistics.max()}", "yellow")
+                       f" Max is {statistics.max()}", "yellow")
         else:
             logger.info("Identities collected from directories names.")
             images = list(list_images(dataset_config.directory_fp))
@@ -54,18 +55,10 @@ class DatasetReader:
         If user want to preserve equality of images per person, this method allow to select
         n images per identity/person from Dataset. """
 
-        result = None
-        for ident in set(self.identities):
-            personal_images = self.filtered.loc[self.filtered["identity"] == ident].head(n)
-            if result is None:
-                result = personal_images
-            else:
-                result = pd.concat([result, personal_images], ignore_index=True)
-
+        result = self.filtered.groupby("identity").head(n)
         if len(set(result["identity"].value_counts().values.tolist())) != 1:
             logger.warning(f"Something went wrong! You chose `equality` option,"
-                           f" but personal images quantities are not equal.", "yellow")
-
+                           f" but personal images quantities are not equal.")
         return result
 
     @staticmethod
