@@ -12,10 +12,9 @@ class SVMTrainer(Trainer):
     def __init__(self, embeddings):
         model = SVC(C=1.0, kernel="linear", probability=True)
         super().__init__(model, embeddings)
-        self.label_encoder = LabelEncoder()
 
     def train(self):
-        logger.warning("Training svg model with %s 128-D vectors." % len(self._embeddings))
+        logger.info("Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings))
         self._labels = self.label_encoder.fit_transform(self._labels)
         self._model.fit(self._embeddings, self._labels)
         return self._model

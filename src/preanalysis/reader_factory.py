@@ -3,7 +3,6 @@ import os
 from enum import Enum
 from typing import List, Callable
 
-import numpy as np
 import pandas as pd
 from imutils.paths import list_images
 from numpy import isnan
@@ -77,7 +76,7 @@ class ReaderFactory:
         return dataset_df
 
     def _read_mixed(self, dc: DatasetConfig, n: int = 1) -> pd.DataFrame:
-        """Reading n images per identity in mixed images d.
+        """Reading n images per identity in mixed images directory.
 
         Example structure:
             dataset

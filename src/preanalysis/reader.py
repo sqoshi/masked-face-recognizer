@@ -28,7 +28,6 @@ class DatasetReader:
     @staticmethod
     def split_dataset(dataset_df: pd.DataFrame, ratio: float = 0.8) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Splits dataset to train and test set."""
-        print(dataset_df)
         logger.info("Splitting dataset into train and tests subsets with ratio = %s.", ratio)
         images_per_person = min(dataset_df["identity"].value_counts().values.tolist())
         train_limit = round(images_per_person * ratio)

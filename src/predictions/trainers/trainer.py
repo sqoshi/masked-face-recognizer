@@ -1,25 +1,39 @@
+import logging
 import pickle
 from abc import ABC, abstractmethod
+from typing import Dict
+
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+
+logger = logging.getLogger(__name__)
 
 
-def read_pickle(path: str):
+def read_pickle(path: str) -> Dict[str, np.ndarray]:
+    """Loading pickled object from path."""
     with open(path, "rb") as fr:
         return pickle.load(fr)
 
 
 class Trainer(ABC):
-    def __init__(self, model, embeddings):
+    """Model trainer class template."""
+
+    def __init__(self, model, embeddings: Dict[str, np.ndarray]):
         self._model = model
         self._embeddings = None
         self._labels = None
-        self.read_embeddings(embeddings)
+        self.label_encoder = LabelEncoder()
+        self.load_embeddings(embeddings)
 
-    def read_embeddings(self, embeddings):
+    def load_embeddings(self, embeddings) -> None:
+        """"""
         if isinstance(embeddings, str):
+            logger.info("Loading embeddings from path %s.", embeddings)
             data = read_pickle(embeddings)
             self._embeddings = data["vectors"]
             self._labels = data["classes"]
         elif isinstance(embeddings, dict):
+            logger.info("Loading embeddings from dictionary.")
             self._embeddings = embeddings["vectors"]
             self._labels = embeddings["classes"]
         else:
@@ -29,6 +43,6 @@ class Trainer(ABC):
     def train(self):
         pass
 
-    def store_model(self, fp="../model.h5"):
+    def store_model(self, fp: str = "../model.h5"):
         with open(fp, 'wb') as fw:
             pickle.dump(self._model, fw, protocol=pickle.HIGHEST_PROTOCOL)
