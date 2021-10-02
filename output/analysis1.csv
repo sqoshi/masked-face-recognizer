@@ -1,0 +1,5 @@
+root_dir,dataset_split_ratio,train_modifications,test_modifications,perfect_acc,top5_acc
+/home/piotr/Documents/bsc-thesis/datasets/original,0.8,,,78.571,92.857
+/home/piotr/Documents/bsc-thesis/datasets/original,0.8,,"DatasetModifications(ratio=1.0, inplace=True)",32.143,66.071
+/home/piotr/Documents/bsc-thesis/datasets/original,0.8,"DatasetModifications(ratio=0.2, inplace=True)","DatasetModifications(ratio=1.0, inplace=True)",42.857,75.0
+/home/piotr/Documents/bsc-thesis/datasets/original,0.8,"DatasetModifications(ratio=0.2, inplace=False)","DatasetModifications(ratio=1.0, inplace=True)",37.5,75.0
