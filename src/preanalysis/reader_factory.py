@@ -7,7 +7,7 @@ import pandas as pd
 from imutils.paths import list_images
 from numpy import isnan
 
-from preanalysis.defs import DatasetConfig
+from preanalysis.dataset_config import DatasetConfig
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +20,14 @@ class Strategy(Enum):
 
 def _limit(dataset_df: pd.DataFrame, n: int) -> pd.DataFrame:
     """Limits identities images to `n` images per identity.."""
-    statistics = dataset_df["identity"].value_counts()[(dataset_df["identity"].value_counts() >= n)]
+    statistics = dataset_df["identity"].value_counts()[
+        (dataset_df["identity"].value_counts() >= n)
+    ]
     identities = statistics.keys().tolist()
     if isnan(statistics.max()) or statistics.max() < n:
-        raise ValueError(f"There is not enough ({n}) images for any identity. Max is {statistics.max()}.")
+        raise ValueError(
+            f"There is not enough ({n}) images for any identity. Max is {statistics.max()}."
+        )
     return dataset_df.loc[dataset_df["identity"].isin(identities)].copy()
 
 
@@ -89,5 +93,6 @@ class ReaderFactory:
         logger.info("Reading dataset mixed with identities in .csv file.")
         attrs_df = pd.read_csv(dc.identities_fp, sep=" ", index_col=False, names=self.columns)
         dataset_df = _limit(attrs_df, n)
-        dataset_df["filename"] = dataset_df["filename"].apply(lambda x: os.path.join(dc.directory_fp, str(x)))
+        dataset_df["filename"] = dataset_df["filename"].apply(
+            lambda x: os.path.join(dc.directory_fp, str(x)))
         return dataset_df

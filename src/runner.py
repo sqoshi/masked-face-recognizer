@@ -1,31 +1,31 @@
 import logging
 import coloredlogs
 
+from preanalysis.dataset_config import DatasetConfigBuilder
 from preanalysis.reader import DatasetReader
-from preanalysis.defs import DatasetConfig
 from predictions.extractor import FaceExtractor
 from predictions.face_recognizer import FaceRecognizer
 from predictions.trainers.svm_trainer import SVMTrainer
 
-logging.basicConfig(filename="log.log")
+logging.basicConfig(filename="masked_face_recognizer.log")
 logger = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG")
 
 if __name__ == '__main__':
     logger.info("Program started.")
     logger.info("1. Dataset reading stage.")
+    dsc_builder = DatasetConfigBuilder()
     dr = DatasetReader(
-        DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/original", None),
-        # DatasetConfig("/home/piotr/Documents/bsc-thesis/datasets/celeba/img_align_celeba",
-        #               "/home/piotr/Documents/bsc-thesis/datasets/celeba/identity_CelebA.txt")
+        dsc_builder.build("/home/piotr/Documents/bsc-thesis/datasets/original")
+        # dsc_builder.build("/home/piotr/Documents/bsc-thesis/datasets/celeba")
     )
     dataset = dr.read()
     train_set, test_set = dr.split_dataset(dataset)
 
     logger.info("2. Extracting embeddings stage.")
     fd = FaceExtractor(train_set)
-    # embs = fd.extract() ; fd.save()
-    embs = "../face_vectors.pickle"
+    embs = fd.extract() ; fd.save()
+    # embs = "../face_vectors.pickle"
 
     logger.info("3. Model training stage")
     t = SVMTrainer(embs)
