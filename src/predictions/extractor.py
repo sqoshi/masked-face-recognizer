@@ -41,7 +41,8 @@ def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
 def warn_detections(face_detections: dlib.rectangles) -> None:
     """Logs warnings about face detection abuses."""
     if len(face_detections) > 1:
-        logger.warning(f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
+        logger.warning(
+            f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
     elif len(face_detections) == 0:
         logger.warning("Could not detect face on image.")
 
@@ -77,7 +78,7 @@ class FaceExtractor(FaceDetector, Embedder):
         for index, row in self.dataset_df.iterrows():
             logger.info(f"Extracting (%s/%s) ...", index, len(self.dataset_df))
             img = Image(row['filename'], row['identity'])
-            face_rectangles = self._detector(img.obj, 1)
+            face_rectangles = self._detector(img.obj, 1)  # get masked
             warn_detections(face_rectangles)
             if face_rectangles:
                 rect = biggest_surface(face_rectangles)  # todo: adjust rectangle
