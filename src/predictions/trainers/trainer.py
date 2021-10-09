@@ -1,7 +1,7 @@
 import logging
 import pickle
 from abc import ABC, abstractmethod
-from typing import Dict, Union
+from typing import Dict, Union, List, Any
 
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
@@ -15,10 +15,13 @@ def read_pickle(path: str) -> Dict[str, np.ndarray]:
         return pickle.load(fr)
 
 
+EmbsDictOrPath = Union[str, Dict[str, List[np.NDArray[Any]]]]
+
+
 class Trainer(ABC):
     """Model trainer class template."""
 
-    def __init__(self, model, embeddings: Union[str, Dict[str, np.ndarray]]) -> None:
+    def __init__(self, model, embeddings: EmbsDictOrPath) -> None:
         self._model = model
         self._embeddings = None
         self._labels = None

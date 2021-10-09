@@ -86,22 +86,3 @@ class FaceExtractor(FaceDetector, Embedder):
                 self._embeddings["vectors"].append(embeddings_vec)
                 self._embeddings["classes"].append(img.identity)
         return self._embeddings
-
-# def draw_sample(image, rect_list, crop_face=False, delay=1):
-#     # something working wrong
-#     def _display_img(img, dly):
-#         cv2.imshow("Output Sample", img)
-#         cv2.waitKey(dly)
-#
-#     for rect in rect_list:
-#         x, y, w, h = rect_to_bb(rect)
-#         cv2.rectangle(image, (x, y), (x + w, y + h), (30, 144, 255), 2)
-#         cv2.putText(image, "Face", (x - 10, y - 10), cv2.FONT_ITALIC, 0.5, (90, 158, 233), 2)
-#
-#         if crop_face:
-#             image = image[rect.top():rect.bottom(), rect.left():rect.right()]
-#             image = imutils.resize(image, 96, 96)
-#             _display_img(image, delay)
-#
-#     if not crop_face:
-#         _display_img(image, delay)

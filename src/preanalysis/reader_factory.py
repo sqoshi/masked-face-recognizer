@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class Strategy(Enum):
     """Represents structure of images kept under dataset directory path."""
     grouped = "grouped"
-    mixed = "mixed"  # requires identity file
+    mixed = "mixed"  # requires identities file
 
 
 def _limit(dataset_df: pd.DataFrame, n: int) -> pd.DataFrame:

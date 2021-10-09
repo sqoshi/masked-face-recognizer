@@ -11,7 +11,8 @@ logging.basicConfig(filename="log.log")
 logger = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG")
 
-if __name__ == '__main__':
+
+def main():
     logger.info("Program started.")
     logger.info("1. Dataset reading stage.")
     dr = DatasetReader(
@@ -37,3 +38,7 @@ if __name__ == '__main__':
     fr = FaceRecognizer(m, test_set, label_coder)
     fr.recognize()
     logger.info("Program ended.")
+
+
+if __name__ == '__main__':
+    main()
