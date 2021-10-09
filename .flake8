@@ -1,0 +1,21 @@
+[flake8]
+ignore =
+    F401,
+    W503
+
+max-complexity = 10
+min-similarity-lines = 300
+max-line-length = 99
+exclude =
+    .tox,
+    .git,
+    __pycache__,
+    build,
+    dist,
+    tests/fixtures/*,
+    *.pyc,
+    *.egg-info,
+    .cache,
+    .mypy_cache,
+    .pytest_cache,
+    .eggs
