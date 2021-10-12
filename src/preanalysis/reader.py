@@ -4,7 +4,7 @@ from typing import Tuple
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from preanalysis.defs import DatasetConfig
+from preanalysis.dataset_config import DatasetConfigBuilder, DatasetConfig
 from preanalysis.reader_factory import ReaderFactory
 
 logger = logging.getLogger(__name__)
@@ -26,12 +26,14 @@ class DatasetReader:
         self._reader_factory = ReaderFactory()
 
     @staticmethod
-    def split_dataset(dataset_df: pd.DataFrame, ratio: float = 0.8) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    def split_dataset(dataset_df: pd.DataFrame, ratio: float = 0.8) -> Tuple[
+        pd.DataFrame, pd.DataFrame]:
         """Splits dataset to train and test set."""
         logger.info("Splitting dataset into train and tests subsets with ratio = %s.", ratio)
         images_per_person = min(dataset_df["identity"].value_counts().values.tolist())
         train_limit = round(images_per_person * ratio)
-        logger.info("images per identity - Train: %s, Test: %s", train_limit, images_per_person - train_limit)
+        logger.info("images per identity - Train: %s, Test: %s", train_limit,
+                    images_per_person - train_limit)
         train_set = dataset_df.groupby("identity").head(train_limit)
         test_set = dataset_df[~dataset_df.index.isin(train_set.index)]
         return train_set, test_set

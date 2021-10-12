@@ -13,15 +13,6 @@ from predictions.image import Image
 logger = logging.getLogger(__name__)
 
 
-# def rect_to_bb(rect: dlib.rectangle):
-#     """Transform dlib rectangle to left,right cords and width, height."""
-#     x = rect.left()
-#     y = rect.top()
-#     w = rect.right() - x
-#     h = rect.bottom() - y
-#     return x, y, w, h
-
-
 def fix_rect(rect: dlib.rectangle):
     """Replaces negative coordinates by 0."""
     return dlib.rectangle(
@@ -34,14 +25,17 @@ def fix_rect(rect: dlib.rectangle):
 
 def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
     """Selects rectangle with biggest area."""
-    logger.info("Selecting face rectangle with biggest area.")
     return max([fix_rect(r) for r in rectangles], key=lambda x: x.area())
 
 
 def warn_detections(face_detections: dlib.rectangles) -> None:
     """Logs warnings about face detection abuses."""
     if len(face_detections) > 1:
-        logger.warning(f"Detected {len(face_detections)} faces on image. The biggest surface face will be processed.")
+        logger.warning(
+            "Detected %i faces on image. The biggest surface face will be processed."
+            % len(face_detections)
+        )
+        logger.info("Selecting face rectangle with biggest area.")
     elif len(face_detections) == 0:
         logger.warning("Could not detect face on image.")
 
