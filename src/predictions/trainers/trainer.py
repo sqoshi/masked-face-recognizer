@@ -3,19 +3,19 @@ import pickle
 from abc import ABC, abstractmethod
 from typing import Dict, Union, List, Any
 
-import numpy as np
+from numpy.typing import NDArray
 from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
 
-def read_pickle(path: str) -> Dict[str, np.ndarray]:
+def read_pickle(path: str) -> Dict[str, NDArray[Any]]:
     """Loading pickled object from path."""
     with open(path, "rb") as fr:
         return pickle.load(fr)
 
 
-EmbsDictOrPath = Union[str, Dict[str, List[np.NDArray[Any]]]]
+EmbsDictOrPath = Union[str, Dict[str, List[NDArray[Any]]]]
 
 
 class Trainer(ABC):

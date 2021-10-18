@@ -1,5 +1,6 @@
 import logging
 import pickle
+from collections import namedtuple
 from typing import Dict, List
 
 import dlib
@@ -11,6 +12,8 @@ from predictions.face_detector import FaceDetector
 from predictions.image import Image
 
 logger = logging.getLogger(__name__)
+
+FakeImage = namedtuple("FakeImage", "obj name")
 
 
 def fix_rect(rect: dlib.rectangle):
@@ -65,18 +68,23 @@ class FaceExtractor(FaceDetector, Embedder):
         with open(fn, 'wb') as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def extract(self) -> Dict[str, List[np.ndarray]]:
+    def extract(self, mask_faces: bool) -> Dict[str, List[np.ndarray]]:
         """Extracting embeddings from loaded images."""
         logger.info("Extracting embeddings.")
         for index, row in self.dataset_df.iterrows():
             logger.info(f"Extracting (%s/%s) ...", index, len(self.dataset_df))
             img = Image(row['filename'], row['identity'])
-            face_rectangles = self._detector(img.obj, 1)  # get masked
+            face_rectangles = self._detector(
+                img.obj,
+                1
+            )
             warn_detections(face_rectangles)
             if face_rectangles:
                 rect = biggest_surface(face_rectangles)  # todo: adjust rectangle
                 face_crop = crop(img, rect)
-                embeddings_vec = self.vector(face_crop).flatten()
+                fi = img.get_masked(FakeImage(face_crop, "m!_" + str(img.path)))
+                embeddings_vec = self.vector(fi).flatten()
+                # embeddings_vec = self.vector(face_crop).flatten()
                 self._embeddings["vectors"].append(embeddings_vec)
                 self._embeddings["classes"].append(img.identity)
         return self._embeddings

@@ -25,7 +25,8 @@ def main():
 
     logger.info("2. Extracting embeddings stage.")
     fd = FaceExtractor(train_set)
-    embs = fd.extract() ; fd.save()
+    embs = fd.extract(mask_faces=True)
+    fd.save()
     # embs = "../face_vectors.pickle"
 
     logger.info("3. Model training stage")
