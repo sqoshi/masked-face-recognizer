@@ -2,7 +2,7 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
-from termcolor import cprint
+from termcolor import cprint, colored
 
 from predictions.embedder import Embedder
 from predictions.extractor import biggest_surface, crop
@@ -13,15 +13,15 @@ from predictions.image import Image
 class FaceRecognizer(FaceDetector, Embedder):
     """Class responsible for recognize classes on images."""
 
-    def __init__(self, model, test_set: pd.DataFrame, label_encoder) -> None:
+    def __init__(self, model, label_encoder) -> None:
         FaceDetector.__init__(self)
         Embedder.__init__(self)
         self._model = model
-        self.test_set_df = test_set
+        print(f"type model = {type(model)}")
+        print(f"type label_encoder = {type(label_encoder)}")
         self._standard_width = 600
         self.label_encoder = label_encoder
         self.statistics = {
-            "tests_quantity": len(test_set),
             "stats": {x: 0 for x in ("perfect", "top5", "fail")},
             "accuracy": {x: 0 for x in ("perfect", "top5")},
             "personal_stats": {}
@@ -33,30 +33,34 @@ class FaceRecognizer(FaceDetector, Embedder):
 
     def personal_stats(self, identity):
         if identity not in self.statistics["personal_stats"].keys():
-            self.statistics["personal_stats"][identity] = {x: 0 for x in ("perfect", "top5", "fail")}
+            self.statistics["personal_stats"][identity] = {x: 0 for x in
+                                                           ("perfect", "top5", "fail")}
         return self.statistics["personal_stats"][identity]
 
     @property
     def accuracy(self):
         return self.statistics["accuracy"]
 
-    def update_stats(self, predictions: np.ndarray, correct_identity: str, stats: Dict[str, int]) -> None:
+    def update_stats(self, predictions: np.ndarray, correct_identity: str,
+                     stats: Dict[str, int]) -> None:
         """Analyzes predictions and update statistics."""
         arr = np.array(predictions)
         top5_indexes = arr.argsort()[-5:][::-1]
         classes = [self.label_encoder.classes_[j] for j in top5_indexes]
         probs = [predictions[idx] for idx in top5_indexes]
+
         if correct_identity in classes:
-            print(correct_identity + " - ", end="")
             if probs[classes.index(correct_identity)] == max(probs):
-                cprint("PERFECT match.", "green")
+                m = colored("PERFECT", "green")
                 key = "perfect"
             else:
-                cprint("TOP5 match.", "yellow")
+                m = colored("TOP5", "yellow")
                 key = "top5"
         else:
-            cprint("WRONG - match.", "red")
+            m = colored("WRONG", "red")
             key = "fail"
+
+        print(f"{correct_identity} - {m} match.")
         stats[key] += 1
         self.personal_stats(correct_identity)[key] += 1
 
@@ -83,14 +87,16 @@ class FaceRecognizer(FaceDetector, Embedder):
             df['top5_accuracy'] = round((df['perfect'] + df['top5']) / sm * 100, 3)
         df.to_csv(stats_fp)
 
-    def recognize(self) -> None:
+    def recognize(self, df: pd.DataFrame) -> None:
         """Classifies identities on images and collects statistics."""
-        for index, row in self.test_set_df.iterrows():
+        for index, row in df.iterrows():
             img = Image(row['filename'], row['identity'])
             face_rectangles = self._detector(img.obj, 1)
             if face_rectangles:
                 rect = biggest_surface(face_rectangles)
                 face_crop = crop(img, rect)
+                if row['impose_mask']:
+                    face_crop = img.get_masked((face_crop, "m!_" + str(img.path)))
                 embeddings_vec = self.vector(face_crop)
                 preds = self._model.predict_proba(embeddings_vec)[0]
                 self.update_stats(preds, img.identity, self.stats)

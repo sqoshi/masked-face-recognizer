@@ -1,19 +1,18 @@
 import logging
 import pickle
 from collections import namedtuple
-from typing import Dict, List
+from typing import Dict, List, Any
 
 import dlib
 import numpy as np
 import pandas as pd
+from numpy.typing import NDArray
 
 from predictions.embedder import Embedder
 from predictions.face_detector import FaceDetector
 from predictions.image import Image
 
 logger = logging.getLogger(__name__)
-
-FakeImage = namedtuple("FakeImage", "obj name")
 
 
 def fix_rect(rect: dlib.rectangle):
@@ -56,11 +55,18 @@ def crop(image: Image, rect: dlib.rectangle) -> np.ndarray:
 class FaceExtractor(FaceDetector, Embedder):
     """Detecting face on image and transforms it to vector."""
 
-    def __init__(self, dataset_df: pd.DataFrame) -> None:
+    def __init__(self) -> None:
         FaceDetector.__init__(self)  # explicit calls without super
         Embedder.__init__(self)
-        self.dataset_df = dataset_df.reset_index(drop=True)
         self._embeddings = {"vectors": [], "classes": []}
+
+    def reset(self) -> None:
+        self._embeddings = {"vectors": [], "classes": []}
+
+    def _upload_embeddings(self, identity: str, vector: NDArray[Any]) -> None:
+        """Saving identity and embeddings to dictionary."""
+        self._embeddings["vectors"].append(vector)
+        self._embeddings["classes"].append(identity)
 
     def save(self, fn: str = "../face_vectors.pickle") -> None:
         """Saving embeddings as dictionary to file."""
@@ -68,23 +74,24 @@ class FaceExtractor(FaceDetector, Embedder):
         with open(fn, 'wb') as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def extract(self, mask_faces: bool) -> Dict[str, List[np.ndarray]]:
+    def extract(self, df: pd.DataFrame) -> Dict[str, List[NDArray[Any]]]:
         """Extracting embeddings from loaded images."""
         logger.info("Extracting embeddings.")
-        for index, row in self.dataset_df.iterrows():
-            logger.info(f"Extracting (%s/%s) ...", index, len(self.dataset_df))
+        for index, row in df.iterrows():
+            logger.info(f"Extracting (%s/%s) ...", index, len(df))
+
             img = Image(row['filename'], row['identity'])
-            face_rectangles = self._detector(
-                img.obj,
-                1
-            )
+            face_rectangles = self._detector(img.obj, 1)
             warn_detections(face_rectangles)
+
             if face_rectangles:
                 rect = biggest_surface(face_rectangles)  # todo: adjust rectangle
+
                 face_crop = crop(img, rect)
-                fi = img.get_masked(FakeImage(face_crop, "m!_" + str(img.path)))
-                embeddings_vec = self.vector(fi).flatten()
-                # embeddings_vec = self.vector(face_crop).flatten()
-                self._embeddings["vectors"].append(embeddings_vec)
-                self._embeddings["classes"].append(img.identity)
+                if row['impose_mask']:
+                    face_crop = img.get_masked((face_crop, "m!_" + str(img.path)))
+
+                embeddings_vec = self.vector(face_crop).flatten()
+                self._upload_embeddings(img.identity, embeddings_vec)
+
         return self._embeddings

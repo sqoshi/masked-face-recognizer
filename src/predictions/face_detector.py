@@ -3,12 +3,6 @@ from _dlib_pybind11 import get_frontal_face_detector
 
 class FaceDetector:
     """Contains detector from `dlib`."""
-    def __init__(self):
-        self._detector = get_frontal_face_detector()
 
-    # def detect(self, img: Image):
-    #     face_rectangles = self._detector(img.obj, 1)
-    #     warn_detections(face_rectangles)
-    #     if not face_rectangles:
-    #         continue
-    #     rect = biggest_surface(face_rectangles)
+    def __init__(self) -> None:
+        self._detector = get_frontal_face_detector()
