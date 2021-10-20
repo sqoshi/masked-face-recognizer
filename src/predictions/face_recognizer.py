@@ -1,24 +1,28 @@
-from typing import Dict
+import logging
+from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 from termcolor import cprint, colored
 
 from predictions.embedder import Embedder
-from predictions.extractor import biggest_surface, crop
 from predictions.face_detector import FaceDetector
-from predictions.image import Image
+from settings import output
+
+logger = logging.getLogger(__name__)
+
+ModelType = Union[SVC]
 
 
 class FaceRecognizer(FaceDetector, Embedder):
     """Class responsible for recognize classes on images."""
 
-    def __init__(self, model, label_encoder) -> None:
+    def __init__(self, model, label_encoder: LabelEncoder) -> None:
         FaceDetector.__init__(self)
         Embedder.__init__(self)
         self._model = model
-        print(f"type model = {type(model)}")
-        print(f"type label_encoder = {type(label_encoder)}")
         self._standard_width = 600
         self.label_encoder = label_encoder
         self.statistics = {
@@ -85,21 +89,35 @@ class FaceRecognizer(FaceDetector, Embedder):
             sm = (df['fail'] + df['perfect'] + df['top5'])
             df['perfect_accuracy'] = round(df['perfect'] / sm * 100, 3)
             df['top5_accuracy'] = round((df['perfect'] + df['top5']) / sm * 100, 3)
-        df.to_csv(stats_fp)
+        df.to_csv(output / stats_fp)
 
-    def recognize(self, df: pd.DataFrame) -> None:
+    def recognize(self, df: pd.DataFrame) -> Dict[str, Dict[str, Union[int, float]]]:
         """Classifies identities on images and collects statistics."""
-        for index, row in df.iterrows():
-            img = Image(row['filename'], row['identity'])
-            face_rectangles = self._detector(img.obj, 1)
-            if face_rectangles:
-                rect = biggest_surface(face_rectangles)
-                face_crop = crop(img, rect)
-                if row['impose_mask']:
-                    face_crop = img.get_masked((face_crop, "m!_" + str(img.path)))
-                embeddings_vec = self.vector(face_crop)
-                preds = self._model.predict_proba(embeddings_vec)[0]
-                self.update_stats(preds, img.identity, self.stats)
+        for i, (vec, img) in enumerate(self.vector_generator(df, self.vector)):
+            logger.info(f"Recognizing (%s/%s) ...", i, len(df.index))
+
+            preds = self._model.predict_proba(vec)[0]
+            self.update_stats(preds, img.identity, self.stats)
+
         self.compute_accuracy(self.stats)
         self.print_stats(self.stats)
-        self.save_stats()
+        # self.save_stats()
+        return self.statistics
+
+# def recognize(self, df: pd.DataFrame) -> Dict[str, Dict[str, Union[int, float]]]:
+#     """Classifies identities on images and collects statistics."""
+#     for index, row in df.iterrows():
+#         img = Image(row['filename'], row['identity'])
+#         face_rectangles = self._detector(img.obj, 1)
+#         if face_rectangles:
+#             rect = biggest_surface(face_rectangles)
+#             face_crop = crop(img, rect)
+#             if row['impose_mask']:
+#                 face_crop = img.get_masked((face_crop, "m!_" + str(img.path)))
+#             embeddings_vec = self.vector(face_crop)
+#             preds = self._model.predict_proba(embeddings_vec)[0]
+#             self.update_stats(preds, img.identity, self.stats)
+#     self.compute_accuracy(self.stats)
+#     self.print_stats(self.stats)
+#     # self.save_stats()
+#     return self.statistics
