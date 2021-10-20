@@ -1,7 +1,7 @@
 import logging
 import os
 from enum import Enum
-from typing import List, Callable
+from typing import Callable, List
 
 import pandas as pd
 from imutils.paths import list_images
@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 class Strategy(Enum):
     """Represents structure of images kept under dataset directory path."""
+
     grouped = "grouped"
-    mixed = "mixed"  # requires identity file
+    mixed = "mixed"  # requires identities file
 
 
 def _limit(dataset_df: pd.DataFrame, n: int) -> pd.DataFrame:
@@ -42,7 +43,9 @@ class ReaderFactory:
     def __init__(self, columns: List[str] = ("filename", "identity")) -> None:
         self.columns = columns
 
-    def read(self, dc: DatasetConfig, n: int, strategy: Strategy = None) -> pd.DataFrame:
+    def read(
+        self, dc: DatasetConfig, n: int, strategy: Strategy = None
+    ) -> pd.DataFrame:
         """Read dataset with n images per identity with special strategy."""
         strategy = auto_strategy(dc) if strategy is None else strategy
         reader = self._get_reader(strategy)
@@ -91,8 +94,11 @@ class ReaderFactory:
             ...
         """
         logger.info("Reading dataset mixed with identities in .csv file.")
-        attrs_df = pd.read_csv(dc.identities_fp, sep=" ", index_col=False, names=self.columns)
+        attrs_df = pd.read_csv(
+            dc.identities_fp, sep=" ", index_col=False, names=self.columns
+        )
         dataset_df = _limit(attrs_df, n)
         dataset_df["filename"] = dataset_df["filename"].apply(
-            lambda x: os.path.join(dc.directory_fp, str(x)))
+            lambda x: os.path.join(dc.directory_fp, str(x))
+        )
         return dataset_df

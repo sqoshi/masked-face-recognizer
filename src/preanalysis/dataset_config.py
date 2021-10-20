@@ -1,9 +1,9 @@
 import logging
 import os
 import sys
+from collections import namedtuple
 from pathlib import Path
 from typing import Optional, Tuple
-from collections import namedtuple
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class DatasetConfigBuilder:
         dc = DatasetConfig(
             directory_fp=images_dir,
             identities_fp=identities_fp,
-            description_fp=description_fp
+            description_fp=description_fp,
         )
 
         logger.info("Dataset configuration = '%s'" % str(dc))
