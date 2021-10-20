@@ -1,6 +1,5 @@
 import logging
 
-from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 
 from predictions.trainers.trainer import Trainer
