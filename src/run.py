@@ -1,5 +1,9 @@
+import csv
 import logging
+import os
+import time
 from collections import namedtuple
+from typing import Optional
 
 import coloredlogs
 import pandas as pd
@@ -10,6 +14,7 @@ from preanalysis.reader import DatasetReader
 from predictions.extractor import FaceExtractor
 from predictions.face_recognizer import FaceRecognizer
 from predictions.trainers.svm_trainer import SVMTrainer
+from settings import output
 
 logging.basicConfig(filename="masked_face_recognizer.log")
 logger = logging.getLogger(__name__)
@@ -32,13 +37,13 @@ class Analyzer:
         self._face_extractor.reset()
 
     def run(
-            self,
-            dataset_path: str,
-            dataset_split_ratio: float,
-            train_set_modifications: DatasetModifications,
-            test_set_modifications: DatasetModifications,
+        self,
+        dataset_path: str,
+        dataset_split_ratio: float,
+        train_mods: Optional[DatasetModifications],
+        test_mods: Optional[DatasetModifications],
     ):
-        logger.info("Program started.")
+        logger.info("Analysis started.")
 
         logger.info("1. Dataset reading stage.")
         dataset = self.read_dataset(dataset_path)
@@ -47,32 +52,103 @@ class Analyzer:
         )
 
         logger.info("2. Extracting embeddings stage.")
+        if train_mods is None:
+            logger.info("Train set has not been modified.")
+            train_mods = DatasetModifications(0.0, True)
+
         embs = self._face_extractor.extract(
-            self._dataset_modifier.modify(train_set, *train_set_modifications)
+            self._dataset_modifier.modify(train_set, *train_mods)
         )
-        # fd.save()
+        self._face_extractor.save()
         # embs = "../face_vectors.pickle"
 
         logger.info("3. Model training stage")
-        t = SVMTrainer(embs)
-        m = t.train()
-        label_coder = t.label_encoder
+        trainer = SVMTrainer(embs)
+        model = trainer.train()
+        label_coder = trainer.label_encoder
         # t.store_model()
 
         logger.info("4. Face recognition stage.")
-        fr = FaceRecognizer(m, label_coder)
-        fr.recognize(self._dataset_modifier.modify(test_set, *test_set_modifications))
+        fr = FaceRecognizer(model, label_coder)
+        if test_mods is None:
+            logger.info("Test set has not been modified.")
+            test_mods = DatasetModifications(0.0, True)
 
-        logger.info("Program ended.")
+        results = fr.recognize(self._dataset_modifier.modify(test_set, *test_mods))
 
+        logger.info("Analysis ended.")
+        return results
+
+
+standard_path = "/home/piotr/Documents/bsc-thesis/datasets/original"
+configs = [
+    (standard_path, 0.8, None, None),
+    (standard_path, 0.8, None, DatasetModifications(1.0, True)),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(0.2, True),
+        DatasetModifications(1.0, True),
+    ),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(0.2, False),
+        DatasetModifications(1.0, True),
+    ),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(0.5, True),
+        DatasetModifications(1.0, True),
+    ),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(0.5, False),
+        DatasetModifications(1.0, True),
+    ),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(1.0, True),
+        DatasetModifications(1.0, True),
+    ),
+    (
+        standard_path,
+        0.8,
+        DatasetModifications(1.0, False),
+        DatasetModifications(1.0, True),
+    ),
+]
 
 if __name__ == "__main__":
-    standard_path = "/home/piotr/Documents/bsc-thesis/datasets/original"
+    logger.info("Program started.")
+    start = time.time()
+    if not os.path.exists(output):
+        os.makedirs(output)
     analyzer = Analyzer()
-    analyzer.run(
-        standard_path,
-        dataset_split_ratio=0.8,
-        train_set_modifications=DatasetModifications(0.0, False),
-        test_set_modifications=DatasetModifications(0.0, True),
-    )
-    analyzer.reset()
+
+    # analyzer.run(
+    #     standard_path,
+    #     dataset_split_ratio=0.8,
+    #     train_mods=DatasetModifications(0.0, False),
+    #     test_mods=DatasetModifications(0.0, True),
+    # )
+    with open(output / "analysis.csv", "w") as csvfile:
+        fieldnames = [
+            "root_dir",
+            "dataset_split_ratio",
+            "train_modifications",
+            "test_modifications",
+            "perfect_acc",
+            "top5_acc",
+        ]
+        writer = csv.writer(csvfile)
+        writer.writerow(fieldnames)
+        for c in configs:
+            stats = analyzer.run(*c)
+            writer.writerow([*c, *stats["accuracy"].values()])
+            analyzer.reset()
+    logger.info("Program finished.")
+    logger.info("--- %s minutes ---" % ((time.time() - start) / 60))

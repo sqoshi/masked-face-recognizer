@@ -6,10 +6,11 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetModifier:
-    """Allow to determine way of masking dataset. """
+    """Allow to determine way of masking dataset."""
 
+    @staticmethod
     def modify(
-            self, df: pd.DataFrame, mask_ratio: float = 0.0, inplace: bool = True
+            df: pd.DataFrame, mask_ratio: float = 0.0, inplace: bool = True
     ) -> pd.DataFrame:
         """
         Modifies Dataset.

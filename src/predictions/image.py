@@ -3,7 +3,6 @@ from typing import Optional
 
 import cv2
 import numpy as np
-
 from mask_imposer import MaskImposer
 
 
@@ -11,13 +10,13 @@ def rgba2rgb(rgba):
     row, col, ch = rgba.shape
     if ch == 3:
         return rgba
-    rgb = np.zeros((row, col, 3), dtype='float32')
+    rgb = np.zeros((row, col, 3), dtype="float32")
     r, g, b, a = rgba[:, :, 0], rgba[:, :, 1], rgba[:, :, 2], rgba[:, :, 3]
-    a = np.asarray(a, dtype='float32') / 255.0
+    a = np.asarray(a, dtype="float32") / 255.0
     rgb[:, :, 0] = r * a + (1.0 - a) * 255
     rgb[:, :, 1] = g * a + (1.0 - a) * 255
     rgb[:, :, 2] = b * a + (1.0 - a) * 255
-    return np.asarray(rgb, dtype='uint8')
+    return np.asarray(rgb, dtype="uint8")
 
 
 FakeImage = namedtuple("FakeImage", "obj name")
@@ -26,7 +25,9 @@ FakeImage = namedtuple("FakeImage", "obj name")
 class Image:
     mask_imposer: MaskImposer = MaskImposer()
 
-    def __init__(self, path: str, identity: Optional[str] = None, size=(96, 96)) -> None:
+    def __init__(
+        self, path: str, identity: Optional[str] = None, size=(96, 96)
+    ) -> None:
         self.obj = cv2.imread(path)
         self.identity = identity
         self.path = path
@@ -49,6 +50,8 @@ class Image:
         return self.masked_obj
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(identity={self.identity!r}," \
-               f" path={self.path!r}," \
-               f" size={self.obj.shape!r})"
+        return (
+            f"{self.__class__.__name__}(identity={self.identity!r},"
+            f" path={self.path!r},"
+            f" size={self.obj.shape!r})"
+        )

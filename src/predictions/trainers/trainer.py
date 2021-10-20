@@ -1,10 +1,12 @@
 import logging
 import pickle
 from abc import ABC, abstractmethod
-from typing import Dict, Union, List, Any
+from typing import Any, Dict, List, Union
 
 from numpy.typing import NDArray
 from sklearn.preprocessing import LabelEncoder
+
+from settings import output
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +47,6 @@ class Trainer(ABC):
     def train(self):
         pass
 
-    def store_model(self, fp: str = "../model.h5") -> None:
-        with open(fp, 'wb') as fw:
+    def store_model(self, fn: str = "model.h5") -> None:
+        with open(output / fn, "wb") as fw:
             pickle.dump(self._model, fw, protocol=pickle.HIGHEST_PROTOCOL)

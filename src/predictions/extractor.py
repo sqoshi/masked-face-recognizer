@@ -1,33 +1,16 @@
 import logging
 import pickle
-from collections import namedtuple
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 import dlib
-import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
 
 from predictions.embedder import Embedder
 from predictions.face_detector import FaceDetector
-from predictions.image import Image
+from settings import output
 
 logger = logging.getLogger(__name__)
-
-
-def fix_rect(rect: dlib.rectangle):
-    """Replaces negative coordinates by 0."""
-    return dlib.rectangle(
-        top=nn(rect.top()),
-        bottom=nn(rect.bottom()),
-        left=nn(rect.left()),
-        right=nn(rect.right())
-    )
-
-
-def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
-    """Selects rectangle with biggest area."""
-    return max([fix_rect(r) for r in rectangles], key=lambda x: x.area())
 
 
 def warn_detections(face_detections: dlib.rectangles) -> None:
@@ -40,16 +23,6 @@ def warn_detections(face_detections: dlib.rectangles) -> None:
         logger.info("Selecting face rectangle with biggest area.")
     elif len(face_detections) == 0:
         logger.warning("Could not detect face on image.")
-
-
-def nn(value: int) -> int:
-    """Casts value to closest non negative value"""
-    return 0 if value < 0 else value
-
-
-def crop(image: Image, rect: dlib.rectangle) -> np.ndarray:
-    """Cuts image to rectangle coordinates."""
-    return image.obj[rect.top():rect.bottom(), rect.left():rect.right()]
 
 
 class FaceExtractor(FaceDetector, Embedder):
@@ -68,30 +41,18 @@ class FaceExtractor(FaceDetector, Embedder):
         self._embeddings["vectors"].append(vector)
         self._embeddings["classes"].append(identity)
 
-    def save(self, fn: str = "../face_vectors.pickle") -> None:
+    def save(self, fn: str = "face_vectors.pickle") -> None:
         """Saving embeddings as dictionary to file."""
-        logger.info("Saving embeddings to %s." % fn)
-        with open(fn, 'wb') as fw:
+        logger.info("Saving embeddings to %s." % output / fn)
+        with open(output / fn, "wb") as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
     def extract(self, df: pd.DataFrame) -> Dict[str, List[NDArray[Any]]]:
         """Extracting embeddings from loaded images."""
         logger.info("Extracting embeddings.")
-        for index, row in df.iterrows():
-            logger.info(f"Extracting (%s/%s) ...", index, len(df))
-
-            img = Image(row['filename'], row['identity'])
-            face_rectangles = self._detector(img.obj, 1)
-            warn_detections(face_rectangles)
-
-            if face_rectangles:
-                rect = biggest_surface(face_rectangles)  # todo: adjust rectangle
-
-                face_crop = crop(img, rect)
-                if row['impose_mask']:
-                    face_crop = img.get_masked((face_crop, "m!_" + str(img.path)))
-
-                embeddings_vec = self.vector(face_crop).flatten()
-                self._upload_embeddings(img.identity, embeddings_vec)
+        for i, (vec, img) in enumerate(self.vector_generator(df, self.vector)):
+            logger.info(f"Extracting (%s/%s) ...", i, len(df.index))
+            embeddings_vec = vec.flatten()
+            self._upload_embeddings(img.identity, embeddings_vec)
 
         return self._embeddings
