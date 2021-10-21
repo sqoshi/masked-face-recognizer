@@ -43,7 +43,7 @@ class FaceExtractor(FaceDetector, Embedder):
 
     def save(self, fn: str = "face_vectors.pickle") -> None:
         """Saving embeddings as dictionary to file."""
-        logger.info("Saving embeddings to %s." % output / fn)
+        logger.info("Saving embeddings to %s." % (output / fn))
         with open(output / fn, "wb") as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
