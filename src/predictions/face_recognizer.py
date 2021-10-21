@@ -109,4 +109,3 @@ class FaceRecognizer(FaceDetector, Embedder):
         self.print_stats(self.stats)
         # self.save_stats()
         return self.statistics
-

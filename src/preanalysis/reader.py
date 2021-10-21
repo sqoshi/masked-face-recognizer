@@ -42,7 +42,7 @@ class DatasetReader:
         )
         train_set = dataset_df.groupby("identity").head(train_limit)
         test_set = dataset_df[~dataset_df.index.isin(train_set.index)]
-        return train_set, test_set
+        return train_set.reset_index(drop=True), test_set.reset_index(drop=True)
 
     def read(self, dataset_config: DatasetConfig, n: int = 1) -> pd.DataFrame:
         """Reads n images per identity using reader factory."""
