@@ -31,7 +31,7 @@ def biggest_surface(rectangles: dlib.rectangles) -> dlib.rectangle:
 
 def crop(image: Image, rect: dlib.rectangle) -> np.ndarray:
     """Cuts image to rectangle coordinates."""
-    return image.obj[rect.top() : rect.bottom(), rect.left() : rect.right()]
+    return image.obj[rect.top(): rect.bottom(), rect.left(): rect.right()]
 
 
 class FaceDetector:
@@ -41,7 +41,7 @@ class FaceDetector:
         self._detector = get_frontal_face_detector()
 
     def vector_generator(
-        self, df: pd.DataFrame, vector_func: Callable
+            self, df: pd.DataFrame, vector_func: Callable
     ) -> Tuple[NDArray[Any], Image]:
         """Creates generator which yields vectors created by openface from images and this image."""
         for index, row in df.iterrows():
