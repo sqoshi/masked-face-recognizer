@@ -23,7 +23,7 @@ class SVMTrainer(Trainer):
         model = SVC(C=1.0, kernel="linear", probability=True)
         super().__init__(model, embeddings)
 
-    # @timer
+    @timer
     def train(self):
         logger.info(
             "Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings)

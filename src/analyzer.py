@@ -7,13 +7,13 @@ from typing import Optional
 import coloredlogs
 import pandas as pd
 
-from preanalysis.dataset_config import DatasetConfigBuilder
-from preanalysis.dataset_modificator import DatasetModifier
-from preanalysis.reader import DatasetReader
+from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfigBuilder
+from preanalysis.dataset_utils.dataset_modification.dataset_modificator import DatasetModifier
+from preanalysis.dataset_utils.dataset_reading.dataset_reader import DatasetReader
 from predictions.extractor import FaceExtractor
 from predictions.face_recognizer import FaceRecognizer
 from predictions.trainers.svm_trainer import SVMTrainer
-from research_cases import configs, DatasetModifications
+from analysis_config import configs, DatasetModifications
 from settings import output
 
 logging.basicConfig(filename="masked_face_recognizer.log")

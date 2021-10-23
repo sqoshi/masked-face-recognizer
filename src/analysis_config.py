@@ -1,8 +1,10 @@
 from collections import namedtuple
-from typing import Union
+from typing import Union, Optional
 
-original = "/home/popis/Documents/datasets/original"
-celeba = "/home/popis/Documents/datasets/celeba"
+# original = "/home/piotr/Documents/bsc-thesis/datasets/test"
+# original = "/home/piotr/Documents/bsc-thesis/datasets/test"
+# original = "/home/piotr/Documents/bsc-thesis/datasets/original"
+celeba = "/home/piotr/Documents/bsc-thesis/datasets/celeba"
 
 DatasetModifications = namedtuple(
     "DatasetModifications", "mask_ratio inplace skip_unknown"
@@ -11,12 +13,12 @@ DatasetModifications = namedtuple(
 
 class AnalysisConfig:
     def __init__(
-        self,
-        dataset,
-        split_ratio,
-        personal_images_quantity=1,
-        test_set_modifications=None,
-        train_set_modifications=None,
+            self,
+            dataset: str,
+            split_ratio: float,
+            personal_images_quantity: int = 1,
+            test_set_modifications: Optional[Union[tuple, DatasetModifications]] = None,
+            train_set_modifications: Optional[Union[tuple, DatasetModifications]] = None,
     ):
         self.dataset: str = dataset
         self.split_ratio: float = split_ratio
@@ -27,8 +29,8 @@ class AnalysisConfig:
 
     @staticmethod
     def create_modifications(
-        modifications: Union[tuple, DatasetModifications]
-    ) -> DatasetModifications:
+            modifications: Union[tuple, DatasetModifications]
+    ) -> Optional[DatasetModifications]:
         if isinstance(modifications, tuple):
             return DatasetModifications(*modifications)
         elif isinstance(modifications, DatasetModifications) or modifications is None:
@@ -63,7 +65,7 @@ class AnalysisConfig:
 
 configs = [
     # AnalysisConfig(original, 0.8, 1, None, None),
-    AnalysisConfig(celeba, 0.8, 30, None, None),
+    AnalysisConfig(celeba, 0.8, 25, None, None),
     # (standard_path, 0.8, None, DatasetModifications(1.0, True, False)),
     # (standard_path, 0.8, DatasetModifications(0.2, True, False), DatasetModifications(1.0, True, False)),
     # (standard_path, 0.8, DatasetModifications(0.2, False), DatasetModifications(1.0, True)),

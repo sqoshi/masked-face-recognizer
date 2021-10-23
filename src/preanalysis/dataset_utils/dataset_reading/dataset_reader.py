@@ -4,8 +4,8 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from preanalysis.dataset_config import DatasetConfig
-from preanalysis.reader_factory import ReaderFactory
+from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfig
+from preanalysis.dataset_utils.dataset_reading.dataset_reader_factory import ReaderFactory
 
 logger = logging.getLogger(__name__)
 
