@@ -25,9 +25,7 @@ FakeImage = namedtuple("FakeImage", "obj name")
 class Image:
     mask_imposer: MaskImposer = MaskImposer()
 
-    def __init__(
-        self, path: str, identity: Optional[str] = None, size=(96, 96)
-    ) -> None:
+    def __init__(self, path: str, identity: Optional[str] = None, size=(96, 96)) -> None:
         self.obj = cv2.imread(path)
         self.identity = identity
         self.path = path
