@@ -4,8 +4,9 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from preanalysis.dataset_config import DatasetConfig
-from preanalysis.reader_factory import ReaderFactory
+from analysis_config import AnalysisConfig
+from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfig
+from preanalysis.dataset_utils.dataset_reading.dataset_reader_factory import ReaderFactory
 
 logger = logging.getLogger(__name__)
 
@@ -20,19 +21,17 @@ class DatasetReader:
     """Reads dataset with limitations and allows to split dataset."""
 
     def __init__(
-        self,
+            self,
     ) -> None:
         self.columns = ("filename", "identity")
         self._reader_factory = ReaderFactory()
 
     @staticmethod
     def split_dataset(
-        dataset_df: pd.DataFrame, ratio: float = 0.8
+            dataset_df: pd.DataFrame, ratio: float = 0.8
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Splits dataset to train and test set."""
-        logger.info(
-            "Splitting dataset into train and tests subsets with ratio = %s.", ratio
-        )
+        logger.info("Splitting dataset into train and tests subsets with ratio = %s.", ratio)
         images_per_person = min(dataset_df["identity"].value_counts().values.tolist())
         train_limit = round(images_per_person * ratio)
         logger.info(
@@ -42,8 +41,8 @@ class DatasetReader:
         )
         train_set = dataset_df.groupby("identity").head(train_limit)
         test_set = dataset_df[~dataset_df.index.isin(train_set.index)]
-        return train_set, test_set
+        return train_set.reset_index(drop=True), test_set.reset_index(drop=True)
 
-    def read(self, dataset_config: DatasetConfig, n: int = 1) -> pd.DataFrame:
+    def read(self, dataset_config: DatasetConfig, analysis_config: AnalysisConfig) -> pd.DataFrame:
         """Reads n images per identity using reader factory."""
-        return self._reader_factory.read(dataset_config, n)
+        return self._reader_factory.read(dataset_config, analysis_config)

@@ -30,7 +30,7 @@ class Trainer(ABC):
         self.label_encoder = LabelEncoder()
         self.load_embeddings(embeddings)
 
-    def load_embeddings(self, embeddings) -> None:
+    def load_embeddings(self, embeddings: EmbsDictOrPath) -> None:
         if isinstance(embeddings, str):
             logger.info("Loading embeddings from path %s.", embeddings)
             data = read_pickle(embeddings)

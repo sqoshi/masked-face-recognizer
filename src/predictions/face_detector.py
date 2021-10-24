@@ -1,4 +1,4 @@
-from typing import Callable, Tuple, Any
+from typing import Any, Callable, Tuple
 
 import dlib
 import numpy as np
@@ -43,6 +43,7 @@ class FaceDetector:
     def vector_generator(
         self, df: pd.DataFrame, vector_func: Callable
     ) -> Tuple[NDArray[Any], Image]:
+        """Creates generator which yields vectors created by openface from images and this image."""
         for index, row in df.iterrows():
             img = Image(row["filename"], row["identity"])
             face_rectangles = self._detector(img.obj, 1)

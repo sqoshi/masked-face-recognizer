@@ -81,14 +81,10 @@ class FaceRecognizer(FaceDetector, Embedder):
     def compute_accuracy(self, stats) -> None:
         """Compute overall model accuracy."""
         tests_number = sum(stats.values())
-        self.accuracy["top5"] = round(
-            (stats["perfect"] + stats["top5"]) / tests_number * 100, 3
-        )
+        self.accuracy["top5"] = round((stats["perfect"] + stats["top5"]) / tests_number * 100, 3)
         self.accuracy["perfect"] = round((stats["perfect"]) / tests_number * 100, 3)
 
-    def save_stats(
-        self, stats_fp: str = "statistics.csv", append_accuracy=False
-    ) -> None:
+    def save_stats(self, stats_fp: str = "statistics.csv", append_accuracy=False) -> None:
         """Saves statistic in csv file."""
         df = pd.DataFrame.from_dict(self.statistics["personal_stats"]).T
         if append_accuracy:
@@ -109,4 +105,3 @@ class FaceRecognizer(FaceDetector, Embedder):
         self.print_stats(self.stats)
         # self.save_stats()
         return self.statistics
-
