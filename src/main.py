@@ -1,4 +1,3 @@
-import csv
 import logging
 import os
 import time
@@ -34,27 +33,26 @@ configs = [
     # (standard_path, 0.8, DatasetModifications(1.0, False), DatasetModifications(1.0, True)),
 ]
 
+
+def mkdir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
 if __name__ == "__main__":
     logger.info("Program started.")
     start = time.time()
-    if not os.path.exists(output):
-        os.makedirs(output)
+    mkdir(output)
     analyzer = Analyzer()
 
-    with open(output / "analysis.csv", "w") as csvfile:
-        fieldnames = [
-            "root_dir",
-            "dataset_split_ratio",
-            "train_modifications",
-            "test_modifications",
-            "perfect_acc",
-            "top5_acc",
-        ]
-        writer = csv.writer(csvfile)
-        writer.writerow(fieldnames)
-        for c in configs:
-            stats = analyzer.run(c)
-            writer.writerow([*c.values(), *stats["accuracy"].values()])
-            analyzer.reset()
+    for c in configs:
+        stats = analyzer.run(c)
+        subdir = output / c.get_dataset_name() / c.name
+        mkdir(subdir)
+        c.to_json(subdir / "analysis_config.json")
+        analyzer.save_model_details(subdir / "model_config.json")
+        stats.to_csv(subdir / "results.csv")
+        analyzer.reset()
+
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
