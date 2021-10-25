@@ -14,7 +14,7 @@ coloredlogs.install(level="DEBUG")
 
 datasets = [
     # "/home/piotr/Documents/bsc-thesis/datasets/test"
-    "/home/piotr/Documents/bsc-thesis/datasets/original"
+    f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/original',
     # "/home/piotr/Documents/bsc-thesis/datasets/celeba"
 ]
 
