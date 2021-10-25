@@ -14,13 +14,13 @@ class SVMTrainer(Trainer):
         super().__init__(model, embeddings)
 
     def train(self):
-        logger.info(
-            "Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings))
+        logger.info("Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings))
         self._labels = self.label_encoder.fit_transform(self._labels)
         self._model.fit(self._embeddings, self._labels)
+
         return self._model
 
-    def store_model(self, fn="svm_model.h5"):
+    def store_model(self, fn="sklearn_svm_svc_model.pickle"):
         logger.info("Saving model in %s." % (output / fn))
         super().store_model(fn)
 
@@ -41,7 +41,6 @@ class SVMTrainer(Trainer):
                 "max_iter": self._model.max_iter,
                 "decision_function_shape": self._model.decision_function_shape,
                 "break_ties": self._model.break_ties,
-                "random_state": self._model.random_state
-            }
-
+                "random_state": self._model.random_state,
+            },
         }

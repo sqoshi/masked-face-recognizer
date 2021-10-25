@@ -33,7 +33,9 @@ class ReaderFactory:
     def __init__(self, columns: List[str] = ("filename", "identity")) -> None:
         self.columns = columns
 
-    def read(self, dc: DatasetConfig, analysis_config:AnalysisConfig, strategy: Strategy = None) -> pd.DataFrame:
+    def read(
+        self, dc: DatasetConfig, analysis_config: AnalysisConfig, strategy: Strategy = None
+    ) -> pd.DataFrame:
         """Read dataset with n images per identity with special strategy."""
         strategy = auto_strategy(dc) if strategy is None else strategy
         reader = self._get_reader(strategy)
@@ -47,7 +49,7 @@ class ReaderFactory:
             return self._read_mixed
         raise ValueError(strategy)
 
-    def _read_grouped(self, dc: DatasetConfig, analysis_config:AnalysisConfig) -> pd.DataFrame:
+    def _read_grouped(self, dc: DatasetConfig, analysis_config: AnalysisConfig) -> pd.DataFrame:
         """Reading n images per identity in identity-grouped structure.
 
         Example structure:
@@ -70,7 +72,7 @@ class ReaderFactory:
         dataset_df = limit_dataframe(dataset_df, analysis_config)
         return dataset_df
 
-    def _read_mixed(self, dc: DatasetConfig, analysis_config:AnalysisConfig) -> pd.DataFrame:
+    def _read_mixed(self, dc: DatasetConfig, analysis_config: AnalysisConfig) -> pd.DataFrame:
         """Reading n images per identity in mixed images directory.
 
         Example structure:

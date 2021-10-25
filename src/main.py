@@ -4,7 +4,7 @@ import time
 
 import coloredlogs
 
-from analysis_config import AnalysisConfig
+from analysis_config import AnalysisConfig, DatasetModifications
 from analyzer import Analyzer
 from settings import output
 
@@ -13,25 +13,72 @@ logger = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG")
 
 datasets = [
-    # v"/home/piotr/Documents/bsc-thesis/datasets/test"
+    # "/home/piotr/Documents/bsc-thesis/datasets/test"
     "/home/piotr/Documents/bsc-thesis/datasets/original"
     # "/home/piotr/Documents/bsc-thesis/datasets/celeba"
 ]
 
-configs = [
-    AnalysisConfig(dataset_path=datasets.pop(),
-                   split_ratio=0.8,
-                   personal_images_quantity=6,
-                   is_piq_max=True,
-                   identities_limit=3),
-    # (standard_path, 0.8, None, DatasetModifications(1.0, True, False)),
-    # (standard_path, 0.8, DatasetModifications(0.2, True, False), DatasetModifications(1.0, True, False)),
-    # (standard_path, 0.8, DatasetModifications(0.2, False), DatasetModifications(1.0, True)),
-    # (standard_path, 0.8, DatasetModifications(0.5, True), DatasetModifications(1.0, True)),
-    # (standard_path, 0.8, DatasetModifications(0.5, False), DatasetModifications(1.0, True)),
-    # (standard_path, 0.8, DatasetModifications(1.0, True), DatasetModifications(1.0, True)),
-    # (standard_path, 0.8, DatasetModifications(1.0, False), DatasetModifications(1.0, True)),
-]
+
+class AnalysisConfigFactory:
+    def __init__(self, path):
+        self.dataset_path = path
+
+    def default(self):
+        """Config without modifications."""
+        return AnalysisConfig(
+            name="no_modifications",
+            dataset_path=self.dataset_path,
+            split_ratio=0.8,
+        )
+
+    def masked_test_set(self):
+        """Masked test set"""
+        return AnalysisConfig(
+            name="masked_test_set",
+            dataset_path=self.dataset_path,
+            split_ratio=0.8,
+            test_set_modifications=DatasetModifications(
+                mask_ratio=1.0, inplace=True
+            )
+        )
+
+    def masked_train_set_masked_test_set(self, p: float):
+        return AnalysisConfig(
+            name=f"{int(p * 100)}%_masked_train_set",
+            dataset_path=self.dataset_path,
+            split_ratio=0.8,
+            train_set_modifications=DatasetModifications(
+                mask_ratio=p, inplace=True
+            ),
+            test_set_modifications=DatasetModifications(
+                mask_ratio=1.0, inplace=True
+            )
+        )
+
+    def masked_extended_train_set_masked_test_set(self, p: float):
+        return AnalysisConfig(
+            name=f"{int(p * 100)}%_masked_extended_train_set",
+            dataset_path=self.dataset_path,
+            split_ratio=0.8,
+            train_set_modifications=DatasetModifications(
+                mask_ratio=p, inplace=False
+            ),
+            test_set_modifications=DatasetModifications(
+                mask_ratio=1.0, inplace=True
+            )
+        )
+
+    def research_path(self):
+        return [
+            self.default(),
+            self.masked_test_set(),
+            self.masked_train_set_masked_test_set(0.2),
+            self.masked_extended_train_set_masked_test_set(0.2),
+            self.masked_train_set_masked_test_set(0.5),
+            self.masked_extended_train_set_masked_test_set(0.5),
+            self.masked_train_set_masked_test_set(0.7),
+            self.masked_extended_train_set_masked_test_set(0.7),
+        ]
 
 
 def mkdir(path):
@@ -45,9 +92,11 @@ if __name__ == "__main__":
     mkdir(output)
     analyzer = Analyzer()
 
-    for c in configs:
+    acf = AnalysisConfigFactory(datasets[0])
+
+    for c in acf.research_path():
         stats = analyzer.run(c)
-        subdir = output / c.get_dataset_name() / c.name
+        subdir = output / c.get_dataset_name() / str(int(start)) / c.name
         mkdir(subdir)
         c.to_json(subdir / "analysis_config.json")
         analyzer.save_model_details(subdir / "model_config.json")

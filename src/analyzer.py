@@ -32,8 +32,9 @@ class Analyzer:
             json.dump(self._model_info, fw)
 
     def read_dataset(self, analysis_config: AnalysisConfig) -> pd.DataFrame:
-        return self._dataset_reader.read(self._dsc_builder.build(analysis_config.dataset_path),
-                                         analysis_config)
+        return self._dataset_reader.read(
+            self._dsc_builder.build(analysis_config.dataset_path), analysis_config
+        )
 
     def reset(self) -> None:
         self._model_info = {}
