@@ -3,7 +3,9 @@ Installing:
     - pip install fastapi "uvicorn[standard]"
 
 Running:
-     - python3 -m uvicorn production_server:app --reload
+     - python3 -m uvicorn deploy:app --reload
+ or
+     - python3  deploy.py
 
 """
 import json
