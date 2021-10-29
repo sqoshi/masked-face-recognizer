@@ -1,3 +1,4 @@
+import json
 import logging
 
 import pandas as pd
@@ -21,11 +22,22 @@ class Analyzer:
         self._dataset_reader = DatasetReader()
         self._dataset_modifier = DatasetModifier()
         self._face_extractor = FaceExtractor()
+        self._model_info = {}
+
+    def save_model_details(self, fp: str):
+        if not self._model_info:
+            logger.warning("Model info is empty.")
+
+        with open(fp, "w+") as fw:
+            json.dump(self._model_info, fw)
 
     def read_dataset(self, analysis_config: AnalysisConfig) -> pd.DataFrame:
-        return self._dataset_reader.read(self._dsc_builder.build(analysis_config.dataset_path), analysis_config)
+        return self._dataset_reader.read(
+            self._dsc_builder.build(analysis_config.dataset_path), analysis_config
+        )
 
     def reset(self) -> None:
+        self._model_info = {}
         self._face_extractor.reset()
 
     def run(self, analysis_config: AnalysisConfig):
@@ -45,6 +57,7 @@ class Analyzer:
         logger.info("3. Model training stage")
         trainer = SVMTrainer(embs)
         model = trainer.train()
+        self._model_info = trainer.get_model_details()
         label_coder = trainer.label_encoder
 
         logger.info("4. Face recognition stage.")

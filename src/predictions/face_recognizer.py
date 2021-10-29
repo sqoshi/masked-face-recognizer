@@ -93,7 +93,7 @@ class FaceRecognizer(FaceDetector, Embedder):
             df["top5_accuracy"] = round((df["perfect"] + df["top5"]) / sm * 100, 3)
         df.to_csv(output / stats_fp)
 
-    def recognize(self, df: pd.DataFrame) -> Dict[str, Dict[str, Union[int, float]]]:
+    def recognize(self, df: pd.DataFrame) -> pd.DataFrame:
         """Classifies identities on images and collects statistics."""
         for i, (vec, img) in enumerate(self.vector_generator(df, self.vector)):
             logger.info(f"Recognizing (%s/%s) ...", i, len(df.index))
@@ -104,4 +104,4 @@ class FaceRecognizer(FaceDetector, Embedder):
         self.compute_accuracy(self.stats)
         self.print_stats(self.stats)
         # self.save_stats()
-        return self.statistics
+        return pd.DataFrame.from_dict(self.statistics["personal_stats"]).T

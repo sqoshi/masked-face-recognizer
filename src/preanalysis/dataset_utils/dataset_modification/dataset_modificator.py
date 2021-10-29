@@ -41,10 +41,10 @@ class DatasetModifier:
                     rows["impose_mask"] = rows["impose_mask"].apply(lambda _: True)
                     new_df = new_df.append(rows)
 
-        if modifications.inplace:
-            logger.info("Skipping `unknown` identities.")
-            new_df = new_df.drop(
-                new_df[(new_df.identity == "unknown") | (new_df.identity is None)].index
-            )
+        # if modifications.skip_unknown:
+        #     logger.info("Skipping `unknown` identities.")
+        #     new_df = new_df.drop(
+        #         new_df[(new_df.identity == "unknown") | (new_df.identity is None)].index
+        #     )
 
         return new_df.sort_values("identity").reset_index(drop=True)

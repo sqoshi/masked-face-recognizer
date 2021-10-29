@@ -25,19 +25,16 @@ def filter_dataframe_groups(df: pd.DataFrame, minimal_quantity: int) -> pd.DataF
     return personal_images_quantities[personal_images_quantities >= minimal_quantity]
 
 
-def limit_dataframe(
-        dataset_df: pd.DataFrame,
-        analysis_config: AnalysisConfig
-) -> pd.DataFrame:
+def limit_dataframe(dataset_df: pd.DataFrame, analysis_config: AnalysisConfig) -> pd.DataFrame:
     """Limits identities images to exactly/ at least `piq` images per identity and
         limits identities quantity to `identities_limit`
 
     :param dataset_df: dataframe with all images.
-
-    :param piq: personal images quantity
-    :param identities_limit: quantity of identities to read
-    :param is_piq_max: if false then `personal_images_quantity` is treated as
-                        'at least' images per person, else `exactly`
+    :param analysis_config - used args from ac
+        - piq: personal images quantity
+        - identities_limit: quantity of identities to read
+        - equal_piqs: if false then `personal_images_quantity` is treated as
+                            'at least' images per person, else `exactly`
 
     :return: dataframe with exactly or at least `personal_images_quantity` images per person.
     """
@@ -47,7 +44,8 @@ def limit_dataframe(
 
     if isnan(piqs_table.max()) or piqs_table.max() < analysis_config.personal_images_quantity:
         logger.critical(
-            f"There is not enough ({analysis_config.personal_images_quantity}) images for any identity." f" Max is {piq_max}."
+            f"There is not enough ({analysis_config.personal_images_quantity}) images for any identity."
+            f" Max is {piq_max}."
         )
         analysis_config.personal_images_quantity = piq_max
         piqs_table = filter_dataframe_groups(dataset_df, piq_max)
@@ -58,6 +56,12 @@ def limit_dataframe(
     logger.info(f"Reading images for {len(identities)} identities.")
 
     new_df = dataset_df.loc[dataset_df["identity"].isin(identities)].copy()
-    if analysis_config.is_piq_max:
+    if analysis_config.equal_piqs:
         new_df = new_df.groupby("identity").head(analysis_config.personal_images_quantity)
+    if analysis_config.skip_unknown:
+        logger.info("Skipping `unknown` identities.")
+        new_df = new_df.drop(
+            new_df[(new_df.identity == "unknown") | (new_df.identity is None)].index
+        )
+
     return new_df.reset_index(drop=True)

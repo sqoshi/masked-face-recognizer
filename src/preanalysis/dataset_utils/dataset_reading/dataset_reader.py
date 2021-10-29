@@ -21,14 +21,14 @@ class DatasetReader:
     """Reads dataset with limitations and allows to split dataset."""
 
     def __init__(
-            self,
+        self,
     ) -> None:
         self.columns = ("filename", "identity")
         self._reader_factory = ReaderFactory()
 
     @staticmethod
     def split_dataset(
-            dataset_df: pd.DataFrame, ratio: float = 0.8
+        dataset_df: pd.DataFrame, ratio: float = 0.8
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Splits dataset to train and test set."""
         logger.info("Splitting dataset into train and tests subsets with ratio = %s.", ratio)
