@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -101,7 +102,56 @@ if __name__ == "__main__":
         c.to_json(subdir / "analysis_config.json")
         analyzer.save_model_details(subdir / "model_config.json")
         stats.to_csv(subdir / "results.csv")
+
+        with open(subdir / "results.json", "w+") as fw:
+            json.dump(
+                json.loads(stats.to_json(orient="columns")),
+                fw
+            )
         analyzer.reset()
 
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
+
+
+# dodaj ilosc klas do wynikow
+# zapamietaj na ktorych testy sie udaly a na ktorych nie
+# modyfikacja wez charakterystyczne punkty zamiast calej twarzy
+# rozne maseczki
+
+# wstep (2 strony max) - !!!!!!!!!
+# - zaintersowanie tym
+# - wytlumaczenie co to jest
+# - glownym cleem pracy jest
+# - temat poruszony zostal w takiej i takiej pracy ( ARXIV )
+# - organizacja pracy ( opis jak bedzie wygladal opis tej pracy)
+
+# analiza problemu
+# - glowne algorytmy, ktore uzywam (SVM, SVC, algorytm indetyfikacji na podstawie roznych rzeczy, related work = referencje (np openface)
+
+# analiza mojego rozwiazania - w miare dokladnie,
+# - mask imposer
+# - classificator (processing twarzy)
+
+# inzynierski rozdzial
+# - biblioteki
+# - jaki jezyk programowania , dlaczego
+# - sprawy techniczne
+# - dlaczego i jak implementacja
+
+# user guide
+# - docker , cudnn w docker
+
+# opisuje testy
+# - testuje wplyw wielkosci rozmiaru np, tabelki - nie na sile, omowic
+
+# podsumowanie
+# - co dalej z nia mozna zrobic ?
+
+# bibliografia
+
+# appendix
+# - polski sumup max 5-7 stron
+
+
+# zaplanowac - plan rodzialow,

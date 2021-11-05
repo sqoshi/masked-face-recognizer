@@ -68,13 +68,18 @@ def list_datasets():
 
 
 @app.get("/output/{dataset}")
-def list_researches(dataset):
+def list_datasets(dataset):
     return build_dict(output / dataset)
 
 
 @app.get("/output/{dataset}/{research_group}")
-def list_analysis(dataset, research_group):
+def list_researches(dataset, research_group):
     return build_dict(output / dataset / research_group)
+
+
+@app.get("/output/{dataset}/{research_group}/{analysis_id}")
+def list_researches(dataset, research_group, analysis_id):
+    return build_dict(output / dataset / research_group / analysis_id)
 
 
 @app.get("/output/{dataset}/{research_group}/{analysis_id}/analysis_config")
@@ -88,7 +93,7 @@ def show_model_config(dataset, research_group, analysis_id):
 
 
 @app.get("/output/{dataset}/{research_group}/{analysis_id}/statistics")
-def show_model_config(dataset, research_group, analysis_id):
+def show_results(dataset, research_group, analysis_id):
     return build_dict(output / dataset / research_group / analysis_id / "results.csv")
 
 

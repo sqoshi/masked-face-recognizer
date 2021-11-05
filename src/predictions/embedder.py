@@ -18,13 +18,14 @@ class Embedder:
         Passes blob to embedder which produces 128-d vector.
         """
         face_blob = cv2.dnn.blobFromImage(
-            face_crop,
+            face_crop,  # characteristic point
             1.0 / 255,
             self._embedder_input_shape,
             (0, 0, 0),
             swapRB=True,
             crop=False,
         )
+        # dlib characteristic
         self._embedder.setInput(face_blob)
         vec = self._embedder.forward()
         return vec

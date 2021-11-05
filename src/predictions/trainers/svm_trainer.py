@@ -15,6 +15,7 @@ class SVMTrainer(Trainer):
 
     def train(self):
         logger.info("Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings))
+
         self._labels = self.label_encoder.fit_transform(self._labels)
         self._model.fit(self._embeddings, self._labels)
 
