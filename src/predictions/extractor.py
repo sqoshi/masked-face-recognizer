@@ -2,6 +2,7 @@ import logging
 import pickle
 from typing import Any, Dict, List
 
+import cv2
 import dlib
 import pandas as pd
 from numpy.typing import NDArray

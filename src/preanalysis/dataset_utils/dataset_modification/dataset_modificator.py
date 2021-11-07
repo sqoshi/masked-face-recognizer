@@ -36,9 +36,9 @@ class DatasetModifier:
                 n = round(len(ident_images.index) * modifications.mask_ratio)
                 rows = ident_images.head(n)
                 if modifications.inplace:
-                    new_df.loc[rows.index, "impose_mask"] = True
+                    new_df.loc[rows.index, "impose_mask"] = modifications.mask
                 else:
-                    rows["impose_mask"] = rows["impose_mask"].apply(lambda _: True)
+                    rows["impose_mask"] = rows["impose_mask"].apply(lambda _: modifications.mask)
                     new_df = new_df.append(rows)
 
         # if modifications.skip_unknown:

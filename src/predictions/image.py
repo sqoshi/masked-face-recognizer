@@ -23,7 +23,8 @@ FakeImage = namedtuple("FakeImage", "obj name")
 
 
 class Image:
-    mask_imposer: MaskImposer = MaskImposer()
+    mask_index = 1
+    mask_imposer: MaskImposer = MaskImposer(mask_index)
 
     def __init__(self, path: str, identity: Optional[str] = None, size=(96, 96)) -> None:
         self.obj = cv2.imread(path)
@@ -32,6 +33,11 @@ class Image:
         self.target_size = size
         self._face = None
         self.masked_obj = None
+
+    def switch_mask_imposer_mask(self, bundled_mask_set_index: int) -> None:
+        # mask imposer get index function is required to opt usage.
+        if self.mask_index != bundled_mask_set_index:
+            self.mask_imposer.switch_mask(bundled_mask_set_index)
 
     def get_masked(self, optional_img=None):
 

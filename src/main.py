@@ -6,6 +6,7 @@ import coloredlogs
 
 from analysis_config import AnalysisConfig, DatasetModifications
 from analyzer import Analyzer
+from mask_strategy import MaskStrategy
 from settings import output
 
 logging.basicConfig(filename="masked_face_recognizer.log")
@@ -38,7 +39,7 @@ class AnalysisConfigFactory:
             dataset_path=self.dataset_path,
             split_ratio=0.8,
             test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True
+                mask_ratio=1.0, inplace=True, mask=MaskStrategy.blue
             )
         )
 
@@ -48,10 +49,10 @@ class AnalysisConfigFactory:
             dataset_path=self.dataset_path,
             split_ratio=0.8,
             train_set_modifications=DatasetModifications(
-                mask_ratio=p, inplace=True
+                mask_ratio=p, inplace=True, mask=MaskStrategy.alternately
             ),
             test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True
+                mask_ratio=1.0, inplace=True, mask=MaskStrategy.alternately
             )
         )
 
@@ -61,23 +62,23 @@ class AnalysisConfigFactory:
             dataset_path=self.dataset_path,
             split_ratio=0.8,
             train_set_modifications=DatasetModifications(
-                mask_ratio=p, inplace=False
+                mask_ratio=p, inplace=False, mask=MaskStrategy.blue
             ),
             test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True
+                mask_ratio=1.0, inplace=True, mask=MaskStrategy.blue
             )
         )
 
     def research_path(self):
         return [
-            self.default(),
-            self.masked_test_set(),
+            # self.default(),
+            # self.masked_test_set(),
             self.masked_train_set_masked_test_set(0.2),
-            self.masked_extended_train_set_masked_test_set(0.2),
-            self.masked_train_set_masked_test_set(0.5),
-            self.masked_extended_train_set_masked_test_set(0.5),
-            self.masked_train_set_masked_test_set(0.7),
-            self.masked_extended_train_set_masked_test_set(0.7),
+            # self.masked_extended_train_set_masked_test_set(0.2),
+            # self.masked_train_set_masked_test_set(0.5),
+            # self.masked_extended_train_set_masked_test_set(0.5),
+            # self.masked_train_set_masked_test_set(0.7),
+            # self.masked_extended_train_set_masked_test_set(0.7),
         ]
 
 

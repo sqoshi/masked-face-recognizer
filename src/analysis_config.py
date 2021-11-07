@@ -5,7 +5,7 @@ import time
 from collections import namedtuple
 from typing import Optional, Union
 
-DatasetModifications = namedtuple("DatasetModifications", "mask_ratio inplace")
+DatasetModifications = namedtuple("DatasetModifications", "mask_ratio inplace mask")
 
 logger = logging.getLogger(__file__)
 
@@ -51,7 +51,7 @@ class AnalysisConfig:
         elif isinstance(modifications, DatasetModifications):
             return modifications
         elif modifications is None:
-            return DatasetModifications(0.0, True)
+            return DatasetModifications(0.0, True, 1)
         raise TypeError("Tuple and DatasetModifications is only accepted.")
 
     def as_dict(self):
