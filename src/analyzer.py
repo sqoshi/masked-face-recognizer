@@ -45,6 +45,7 @@ class Analyzer:
 
         logger.info("1. Dataset reading stage.")
         dataset = self.read_dataset(analysis_config)
+        dataset = dataset.sample(frac=1).reset_index(drop=True)
         train_set, test_set = self._dataset_reader.split_dataset(
             dataset, ratio=analysis_config.split_ratio
         )
