@@ -106,3 +106,15 @@ if __name__ == "__main__":
 
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
+
+# researches list:
+# 1. default - no modifications
+# 2. masked test set:
+#   1. influence of masked images ratio in train set with same mask [0.2,0.5,0.7,1.0]
+#   2. influence of extending train set by masked images / modifying inplace [inplace vs extended]
+#   3. influence of adding unknown identity [ skip_unknown ]
+#   4. influence of mixing different masks [alternately(grey, blue)]
+#   5. influence of using black boxes instead of masks
+#   6. influence of extracting embeddings only from characteristic points. [must be in place] <- #TODO[blob]
+#   7. influence of extracting embeddings only from  whole image. <- #TODO
+#
