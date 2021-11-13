@@ -6,7 +6,7 @@ from typing import Callable, List
 import pandas as pd
 from imutils.paths import list_images
 
-from analysis_config import AnalysisConfig
+from research_configurators.analysis_config import AnalysisConfig
 from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfig
 from preanalysis.dataset_utils.dataset_reading.reading_limitations import limit_dataframe
 

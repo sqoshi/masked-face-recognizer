@@ -4,7 +4,7 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from analysis_config import AnalysisConfig
+from research_configurators.analysis_config import AnalysisConfig
 from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfig
 from preanalysis.dataset_utils.dataset_reading.dataset_reader_factory import ReaderFactory
 

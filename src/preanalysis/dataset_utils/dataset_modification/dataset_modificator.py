@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from analysis_config import DatasetModifications
+from research_configurators.analysis_config import DatasetModifications
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class DatasetModifier:
         new_df = df.assign(impose_mask=lambda _: False)
         if modifications.mask_ratio != 0.0:
             logger.info(
-                f"Masked {modifications.mask_ratio * 100}% of images inplace={modifications.inplace}."
+                f"Masked {modifications.mask_ratio * 100}% of images, inplace={modifications.inplace}."
             )
             for ident in set(df["identity"]):
                 ident_images = new_df.loc[new_df["identity"] == ident]

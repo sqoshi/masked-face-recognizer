@@ -77,20 +77,49 @@ def list_analysis(dataset, research_group):
     return build_dict(output / dataset / research_group)
 
 
+@app.get("/output/{dataset}/{research_group}/{analysis_id}")
+def show_analysis_content(dataset, research_group, analysis_id):
+    path = output / dataset / research_group / analysis_id
+    dir_content = build_dict(path)
+    dir_content["content_type"] = "analysis" if dir_content["directories"] else "experiment"
+    return dir_content
+
+
 @app.get("/output/{dataset}/{research_group}/{analysis_id}/analysis_config")
 def show_analysis_config(dataset, research_group, analysis_id):
     return build_dict(output / dataset / research_group / analysis_id / "analysis_config.json")
 
 
-@app.get("/output/{dataset}/{research_group}/{analysis_id}/model_config")
+@app.get("/output/{dataset}/{research_group}/{analysis_id}/model")
 def show_model_config(dataset, research_group, analysis_id):
     return build_dict(output / dataset / research_group / analysis_id / "model_config.json")
 
 
-@app.get("/output/{dataset}/{research_group}/{analysis_id}/statistics")
-def show_model_config(dataset, research_group, analysis_id):
-    return build_dict(output / dataset / research_group / analysis_id / "results.csv")
+@app.get("/output/{dataset}/{research_group}/{analysis_id}/results")
+def show_results(dataset, research_group, analysis_id):
+    return build_dict(output / dataset / research_group / analysis_id / "results.json")
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, port=8668, host='127.0.0.1')
+@app.get("/output/{dataset}/{research_group}/{experiment_id}/{analysis_id}/analysis_config")
+def show_sub_analysis_config(dataset, research_group, experiment_id, analysis_id):
+    return build_dict(
+        output / dataset / research_group / experiment_id / analysis_id / "analysis_config.json"
+    )
+
+
+@app.get("/output/{dataset}/{research_group}/{experiment_id}/{analysis_id}/model")
+def show_sub_analysis_model(dataset, research_group, experiment_id, analysis_id):
+    return build_dict(
+        output / dataset / research_group / experiment_id / analysis_id / "model_config.json"
+    )
+
+
+@app.get("/output/{dataset}/{research_group}/{experiment_id}/{analysis_id}/results")
+def show_sub_analysis_results(dataset, research_group, experiment_id, analysis_id):
+    return build_dict(
+        output / dataset / research_group / experiment_id / analysis_id / "results.json"
+    )
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8668, host="127.0.0.1")

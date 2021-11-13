@@ -4,9 +4,10 @@ import time
 
 import coloredlogs
 
-from analysis_config import AnalysisConfig, DatasetModifications
+from research_configurators.analysis_config import AnalysisConfig
+from research_configurators.analysis_config_factory import AnalysisConfigFactory
 from analyzer import Analyzer
-from mask_strategy import MaskStrategy
+from research_configurators.experiment import Experiment
 from settings import output
 
 logging.basicConfig(filename="masked_face_recognizer.log")
@@ -20,71 +21,20 @@ datasets = [
 ]
 
 
-class AnalysisConfigFactory:
-    def __init__(self, path):
-        self.dataset_path = path
-
-    def default(self):
-        """Config without modifications."""
-        return AnalysisConfig(
-            name="no_modifications",
-            dataset_path=self.dataset_path,
-            split_ratio=0.8,
-        )
-
-    def masked_test_set(self):
-        """Masked test set"""
-        return AnalysisConfig(
-            name="masked_test_set",
-            dataset_path=self.dataset_path,
-            split_ratio=0.8,
-            test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True, mask=MaskStrategy.blue
-            )
-        )
-
-    def masked_train_set_masked_test_set(self, p: float):
-        return AnalysisConfig(
-            name=f"{int(p * 100)}%_masked_train_set",
-            dataset_path=self.dataset_path,
-            split_ratio=0.8,
-            train_set_modifications=DatasetModifications(
-                mask_ratio=p, inplace=True, mask=MaskStrategy.alternately
-            ),
-            test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True, mask=MaskStrategy.alternately
-            )
-        )
-
-    def masked_extended_train_set_masked_test_set(self, p: float):
-        return AnalysisConfig(
-            name=f"{int(p * 100)}%_masked_extended_train_set",
-            dataset_path=self.dataset_path,
-            split_ratio=0.8,
-            train_set_modifications=DatasetModifications(
-                mask_ratio=p, inplace=False, mask=MaskStrategy.blue
-            ),
-            test_set_modifications=DatasetModifications(
-                mask_ratio=1.0, inplace=True, mask=MaskStrategy.blue
-            )
-        )
-
-    def research_path(self):
-        return [
-            # self.default(),
-            # self.masked_test_set(),
-            self.masked_train_set_masked_test_set(0.2),
-            # self.masked_extended_train_set_masked_test_set(0.2),
-            # self.masked_train_set_masked_test_set(0.5),
-            # self.masked_extended_train_set_masked_test_set(0.5),
-            # self.masked_train_set_masked_test_set(0.7),
-            # self.masked_extended_train_set_masked_test_set(0.7),
-        ]
-
-
 def mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+
+def investigate(analysis_list):
+    for config in analysis_list:
+        if isinstance(config, AnalysisConfig):
+            subdir = output / config.get_dataset_name() / str(int(start)) / config.name
+            analyzer.run(config)
+            analyzer.save(subdir, config)
+            analyzer.reset()
+        elif isinstance(config, Experiment):
+            investigate(config)
 
 
 if __name__ == "__main__":
@@ -95,14 +45,7 @@ if __name__ == "__main__":
 
     acf = AnalysisConfigFactory(datasets[0])
 
-    for c in acf.research_path():
-        stats = analyzer.run(c)
-        subdir = output / c.get_dataset_name() / str(int(start)) / c.name
-        mkdir(subdir)
-        c.to_json(subdir / "analysis_config.json")
-        analyzer.save_model_details(subdir / "model_config.json")
-        stats.to_csv(subdir / "results.csv")
-        analyzer.reset()
+    investigate(acf.research_path())
 
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
@@ -112,7 +55,7 @@ if __name__ == "__main__":
 # 2. masked test set:
 #   1. influence of masked images ratio in train set with same mask [0.2,0.5,0.7,1.0]
 #   2. influence of extending train set by masked images / modifying inplace [inplace vs extended]
-#   3. influence of adding unknown identity [ skip_unknown ]
+#   3. influence of adding unknown identity [ skip unknown personality ]
 #   4. influence of mixing different masks [alternately(grey, blue)]
 #   5. influence of using black boxes instead of masks
 #   6. influence of extracting embeddings only from characteristic points. [must be in place] <- #TODO[blob]

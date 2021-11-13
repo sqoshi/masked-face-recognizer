@@ -1,9 +1,10 @@
 import json
 import logging
+import os
 
 import pandas as pd
 
-from analysis_config import AnalysisConfig
+from research_configurators.analysis_config import AnalysisConfig
 from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import (
     DatasetConfigBuilder,
 )
@@ -16,6 +17,11 @@ from predictions.trainers.svm_trainer import SVMTrainer
 logger = logging.getLogger(__name__)
 
 
+def mkdir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
 class Analyzer:
     def __init__(self):
         self._dsc_builder = DatasetConfigBuilder()
@@ -23,6 +29,7 @@ class Analyzer:
         self._dataset_modifier = DatasetModifier()
         self._face_extractor = FaceExtractor()
         self._model_info = {}
+        self._results = {}
 
     def save_model_details(self, fp: str):
         if not self._model_info:
@@ -38,6 +45,7 @@ class Analyzer:
 
     def reset(self) -> None:
         self._model_info = {}
+        self._results = {}
         self._face_extractor.reset()
 
     def run(self, analysis_config: AnalysisConfig):
@@ -69,4 +77,15 @@ class Analyzer:
         )
 
         logger.info("Analysis ended.")
+        self._results = results
         return results
+
+    def save(self, subdir, config, save_csv=False) -> None:
+        mkdir(subdir)
+        config.to_json(subdir / "analysis_config.json")
+        self.save_model_details(subdir / "model_config.json")
+        if save_csv:
+            self._results.to_csv(subdir / "results.csv")  # must be saved as json
+        with open(subdir / "results.json", "w+") as f:
+            f.write(self._results.to_json(orient='table'))
+        # self._results.to_json(subdir / "results.json", orient='records', lines=True)

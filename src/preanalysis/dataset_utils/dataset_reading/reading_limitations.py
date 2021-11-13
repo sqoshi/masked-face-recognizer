@@ -4,7 +4,7 @@ from typing import List, Optional
 import pandas as pd
 from numpy import isnan
 
-from analysis_config import AnalysisConfig
+from research_configurators.analysis_config import AnalysisConfig
 
 logger = logging.getLogger(__name__)
 

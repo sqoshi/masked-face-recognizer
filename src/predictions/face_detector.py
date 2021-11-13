@@ -1,14 +1,13 @@
 import random
 from typing import Any, Callable, Tuple
 
-import cv2
 import dlib
 import numpy as np
 import pandas as pd
 from _dlib_pybind11 import get_frontal_face_detector
 from numpy.typing import NDArray
 
-from mask_strategy import MaskStrategy
+from research_configurators.mask_strategy import MaskingStrategy
 from predictions.image import Image
 
 
@@ -42,8 +41,8 @@ class FaceDetector:
 
     def __init__(self) -> None:
         self._detector = get_frontal_face_detector()
-        self._real_masks = [MaskStrategy.blue, MaskStrategy.grey]
-        self._masks = self._real_masks + [MaskStrategy.black_box]
+        self._real_masks = [MaskingStrategy.blue, MaskingStrategy.grey]
+        self._masks = self._real_masks + [MaskingStrategy.black_box]
         self._last_mask = random.choice(self._real_masks)
 
     def vector_generator(
@@ -60,7 +59,7 @@ class FaceDetector:
                 face_crop = crop(img, rect)
 
                 if row["impose_mask"]:
-                    if row["impose_mask"] == MaskStrategy.alternately:
+                    if row["impose_mask"] == MaskingStrategy.alternately:
                         img.switch_mask_imposer_mask(self._last_mask.value)
                         self._last_mask = [x for x in self._real_masks if x != self._last_mask][0]
                     elif row["impose_mask"] in self._masks:

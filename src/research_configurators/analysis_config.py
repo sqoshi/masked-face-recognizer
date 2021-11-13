@@ -3,11 +3,19 @@ import logging
 import os
 import time
 from collections import namedtuple
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 
 DatasetModifications = namedtuple("DatasetModifications", "mask_ratio inplace mask")
 
 logger = logging.getLogger(__file__)
+
+
+def namedtuple_asdict(namedtuple_object) -> Dict[str, str]:
+    """Converts namedtuple to a strings dictionary."""
+    res = {}
+    for k, v in zip(namedtuple_object._fields, namedtuple_object):
+        res[k] = str(v)
+    return res
 
 
 class AnalysisConfig:
@@ -63,14 +71,8 @@ class AnalysisConfig:
             "split_ratio": self.split_ratio,
             "skip_unknown": self.skip_unknown,
             "modifications": {
-                "train": {
-                    "mask_ratio": self.modifications.train.mask_ratio,
-                    "inplace": self.modifications.train.inplace,
-                },
-                "test": {
-                    "mask_ratio": self.modifications.test.mask_ratio,
-                    "inplace": self.modifications.test.inplace,
-                },
+                "train": namedtuple_asdict(self.modifications.train),
+                "test": namedtuple_asdict(self.modifications.test),
             },
         }
 
