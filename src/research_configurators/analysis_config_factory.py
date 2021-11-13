@@ -54,7 +54,7 @@ class AnalysisConfigFactory:
 
     def experiment_masking_ratio_influence_inplace(self):
         return Experiment(
-            name="masking_ratio_influence_inplace",
+            name="experiment_masking_ratio_influence_inplace",
             configs=[
                 self.masked_train_set_masked_test_set(0.2),
                 self.masked_train_set_masked_test_set(0.5),
@@ -64,7 +64,7 @@ class AnalysisConfigFactory:
 
     def experiment_masking_ratio_influence_extended(self):
         return Experiment(
-            name="masking_ratio_influence_extended",
+            name="experiment_masking_ratio_influence_extended",
             configs=[
                 self.masked_train_set_masked_test_set(0.2),
                 self.masked_train_set_masked_test_set(0.5),
@@ -72,16 +72,36 @@ class AnalysisConfigFactory:
             ]
         )
 
+    def analyze_unknown_personality_influence(self):
+        default_config = self.masked_train_set_masked_test_set(0.7)
+        default_config.name = "skipped_personality"
+        print(default_config.skip_unknown)
+        default_config.skip_unknown = True
+        return default_config
+
+    def analyze_alternate_mask(self):
+        default_config = self.masked_test_set()
+        default_config.name = "different_masks"
+        default_config.modifications.train = DatasetModifications(
+                mask_ratio=0.7, inplace=False, mask=MaskingStrategy.alternately
+            )
+        return default_config
+
+    def analyze_black_boxes_instead_of_mask_influence(self):
+        default_config = self.masked_test_set()
+        default_config.name = "black_boxes"
+        default_config.modifications.train = DatasetModifications(
+                mask_ratio=0.7, inplace=False, mask=MaskingStrategy.black_box
+            )
+        return default_config
+
     def research_path(self):
         return [
             self.default(),
             self.masked_test_set(),
             self.experiment_masking_ratio_influence_inplace(),
-            self.experiment_masking_ratio_influence_extended()
-            # self.masked_train_set_masked_test_set(0.2),  # g1
-            # self.masked_train_set_masked_test_set(0.5),  # g1
-            # self.masked_train_set_masked_test_set(0.7),  # g1
-            # self.masked_extended_train_set_masked_test_set(0.2),
-            # self.masked_extended_train_set_masked_test_set(0.5),
-            # self.masked_extended_train_set_masked_test_set(0.7),
+            self.experiment_masking_ratio_influence_extended(),
+            self.analyze_unknown_personality_influence(),
+            self.analyze_alternate_mask(),
+            self.analyze_black_boxes_instead_of_mask_influence()
         ]

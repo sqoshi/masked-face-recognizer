@@ -26,15 +26,15 @@ def mkdir(path):
         os.makedirs(path)
 
 
-def investigate(analysis_list):
+def investigate(analysis_list, research_group, subgroup_dir=""):
     for config in analysis_list:
         if isinstance(config, AnalysisConfig):
-            subdir = output / config.get_dataset_name() / str(int(start)) / config.name
+            subdir = output / config.get_dataset_name() / research_group / subgroup_dir / config.name
             analyzer.run(config)
             analyzer.save(subdir, config)
             analyzer.reset()
         elif isinstance(config, Experiment):
-            investigate(config)
+            investigate(config, research_group, subgroup_dir=config.name)
 
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     acf = AnalysisConfigFactory(datasets[0])
 
-    investigate(acf.research_path())
+    investigate(acf.research_path(), str(int(start)))
 
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
@@ -59,5 +59,5 @@ if __name__ == "__main__":
 #   4. influence of mixing different masks [alternately(grey, blue)]
 #   5. influence of using black boxes instead of masks
 #   6. influence of extracting embeddings only from characteristic points. [must be in place] <- #TODO[blob]
-#   7. influence of extracting embeddings only from  whole image. <- #TODO
+#   7. influence of extracting embeddings only from  whole image.
 #
