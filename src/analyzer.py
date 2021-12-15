@@ -60,11 +60,12 @@ class Analyzer:
 
         logger.info("2. Extracting embeddings stage.")
         embs = self._face_extractor.extract(
-            self._dataset_modifier.modify(train_set, analysis_config.modifications.train)
+            self._dataset_modifier.modify(train_set, analysis_config.modifications.train),
+            analysis_config.landmarks_detection
         )
 
         logger.info("3. Model training stage")
-        trainer = SVMTrainer(embs)
+        trainer = SVMTrainer(embs, analysis_config.svm_config)
         model = trainer.train()
         self._model_info = trainer.get_model_details()
         label_coder = trainer.label_encoder
@@ -73,7 +74,8 @@ class Analyzer:
         fr = FaceRecognizer(model, label_coder)
 
         results = fr.recognize(
-            self._dataset_modifier.modify(test_set, analysis_config.modifications.test)
+            self._dataset_modifier.modify(test_set, analysis_config.modifications.test),
+            analysis_config.landmarks_detection
         )
 
         logger.info("Analysis ended.")

@@ -30,7 +30,7 @@ app.add_middleware(
 
 
 def handle_dir(path):
-    dictionary = {"type": "directory", "files": [], "directories": []}
+    dictionary = {"type": "directory", "content_type": "list", "files": [], "directories": []}
     for entity in os.listdir(path):
         abs_path = str(path / entity)
         if os.path.isdir(abs_path):
@@ -41,7 +41,7 @@ def handle_dir(path):
 
 
 def handle_file(path):
-    dictionary = {"type": "file", "filename": path.name}
+    dictionary = {"type": "file", "content_type": "file_content", "filename": path.name}
     with open(path, "r") as fr:
         if str(path).endswith(".json"):
             dictionary["content"] = json.load(fr)
@@ -81,7 +81,7 @@ def list_analysis(dataset, research_group):
 def show_analysis_content(dataset, research_group, analysis_id):
     path = output / dataset / research_group / analysis_id
     dir_content = build_dict(path)
-    dir_content["content_type"] = "analysis" if dir_content["directories"] else "experiment"
+    dir_content["content_type"] = "experiment" if dir_content["directories"] else "analysis"
     return dir_content
 
 
@@ -98,6 +98,14 @@ def show_model_config(dataset, research_group, analysis_id):
 @app.get("/output/{dataset}/{research_group}/{analysis_id}/results")
 def show_results(dataset, research_group, analysis_id):
     return build_dict(output / dataset / research_group / analysis_id / "results.json")
+
+
+@app.get("/output/{dataset}/{research_group}/{experiment_id}/{analysis_id}")
+def show_analysis_content(dataset, research_group, experiment_id, analysis_id):
+    path = output / dataset / research_group / experiment_id / analysis_id
+    dir_content = build_dict(path)
+    dir_content["content_type"] = "experiment" if dir_content["directories"] else "analysis"
+    return dir_content
 
 
 @app.get("/output/{dataset}/{research_group}/{experiment_id}/{analysis_id}/analysis_config")
@@ -121,5 +129,9 @@ def show_sub_analysis_results(dataset, research_group, experiment_id, analysis_i
     )
 
 
-if __name__ == "__main__":
+def deploy():
     uvicorn.run(app, port=8668, host="127.0.0.1")
+
+
+if __name__ == "__main__":
+    deploy()

@@ -17,7 +17,7 @@ coloredlogs.install(level="DEBUG")
 datasets = [
     # "/home/piotr/Documents/bsc-thesis/datasets/test"
     f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/original',
-    # "/home/piotr/Documents/bsc-thesis/datasets/celeba"
+    f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/celeba'
 ]
 
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     mkdir(output)
     analyzer = Analyzer()
 
-    acf = AnalysisConfigFactory(datasets[0])
+    acf = AnalysisConfigFactory(datasets[-1])
 
     investigate(acf.research_path(), str(int(start)))
 

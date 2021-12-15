@@ -1,12 +1,16 @@
 import logging
+import sys
 from typing import List, Optional
 
 import pandas as pd
+from matplotlib import pyplot as plt
 from numpy import isnan
 
 from research_configurators.analysis_config import AnalysisConfig
 
 logger = logging.getLogger(__name__)
+
+draw_charts = False
 
 
 def _limit_identities(identities_list: List[str], identities_limit: Optional[int]) -> List[str]:
@@ -39,6 +43,12 @@ def limit_dataframe(dataset_df: pd.DataFrame, analysis_config: AnalysisConfig) -
     :return: dataframe with exactly or at least `personal_images_quantity` images per person.
     """
     # select only images with at least n personal images.
+    if draw_charts:
+        prob = dataset_df["identity"].value_counts().value_counts()
+        prob = prob.sort_index()
+        prob.plot(kind='bar')
+        plt.xticks(rotation=70)
+        plt.show()
     piq_max = dataset_df["identity"].value_counts().max()
     piqs_table = filter_dataframe_groups(dataset_df, analysis_config.personal_images_quantity)
 

@@ -3,7 +3,7 @@ import logging
 import os
 import time
 from collections import namedtuple
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, Any
 
 DatasetModifications = namedtuple("DatasetModifications", "mask_ratio inplace mask")
 
@@ -27,9 +27,11 @@ class AnalysisConfig:
             equal_piqs: bool = False,
             skip_unknown: bool = False,
             identities_limit: Optional[int] = None,
+            landmarks_detection: bool = True,
             test_set_modifications: Optional[Union[tuple, DatasetModifications]] = None,
             train_set_modifications: Optional[Union[tuple, DatasetModifications]] = None,
             name: Optional[str] = None,
+            svm_config: Optional[Dict[str, Any]] = None,
     ):
         self.dataset_path: str = dataset_path
         self.split_ratio: float = split_ratio
@@ -37,10 +39,15 @@ class AnalysisConfig:
         self.equal_piqs: bool = equal_piqs
         self.identities_limit = identities_limit
         self.skip_unknown: bool = skip_unknown
+        self.landmarks_detection: bool = landmarks_detection
         self.modifications = namedtuple("modifications", "test train")
         self.modifications.test = self.create_modifications(test_set_modifications)
         self.modifications.train = self.create_modifications(train_set_modifications)
         self.name = self.set_name(name)
+        self.svm_config = svm_config if svm_config is not None else {"C": 1.0, "kernel": "poly",
+                                                                     "degree": 5,
+                                                                     "probability": True,
+                                                                     "random_state": True}
 
     def get_dataset_name(self):
         return self.dataset_path.split(os.path.sep)[-1]
@@ -70,6 +77,7 @@ class AnalysisConfig:
             "identities_limit": self.identities_limit,
             "split_ratio": self.split_ratio,
             "skip_unknown": self.skip_unknown,
+            "landmarks_detection": self.landmarks_detection,
             "modifications": {
                 "train": namedtuple_asdict(self.modifications.train),
                 "test": namedtuple_asdict(self.modifications.test),

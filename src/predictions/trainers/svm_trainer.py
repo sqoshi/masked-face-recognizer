@@ -1,4 +1,5 @@
 import logging
+from typing import Dict, Any, Optional
 
 from sklearn.svm import SVC
 
@@ -9,8 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 class SVMTrainer(Trainer):
-    def __init__(self, embeddings):
-        model = SVC(C=1.0, kernel="linear", probability=True)
+    def __init__(self, embeddings, svm_config: Optional[Dict[str, Any]]):
+        if svm_config is None:
+            svm_config = {"C": 1.0, "kernel": "poly", "degree": 5, "probability": True,
+                          "random_state": True}
+        model = SVC(**svm_config)
         super().__init__(model, embeddings)
 
     def train(self):

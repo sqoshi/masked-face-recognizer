@@ -47,7 +47,7 @@ class FaceRecognizer(FaceDetector, Embedder):
         return self.statistics["accuracy"]
 
     def update_stats(
-        self, predictions: np.ndarray, correct_identity: str, stats: Dict[str, int]
+            self, predictions: np.ndarray, correct_identity: str, stats: Dict[str, int]
     ) -> None:
         """Analyzes predictions and update statistics."""
         arr = np.array(predictions)
@@ -76,7 +76,9 @@ class FaceRecognizer(FaceDetector, Embedder):
         cprint(f"{stats['top5']} top5.", "yellow")
         cprint(f"{stats['fail']} fails.", "red")
         cprint(f"Model accuracy [perfect]: {self.accuracy['perfect']}", "green")
+        logger.info(f"Model accuracy [perfect]: {self.accuracy['perfect']}")
         cprint(f"Model accuracy [top5+perfect]: {self.accuracy['top5']}", "green")
+        logger.info(f"Model accuracy [top5+perfect]: {self.accuracy['top5']}")
 
     def compute_accuracy(self, stats) -> None:
         """Compute overall model accuracy."""
@@ -93,9 +95,10 @@ class FaceRecognizer(FaceDetector, Embedder):
             df["top5_accuracy"] = round((df["perfect"] + df["top5"]) / sm * 100, 3)
         df.to_csv(output / stats_fp)
 
-    def recognize(self, df: pd.DataFrame) -> pd.DataFrame:
+    def recognize(self, df: pd.DataFrame, landmarks_detection) -> pd.DataFrame:
         """Classifies identities on images and collects statistics."""
-        for i, (vec, img) in enumerate(self.vector_generator(df, self.vector)):
+        for i, (vec, img) in enumerate(
+                self.vector_generator(df, self.vector, landmarks_detection)):
             logger.info(f"Recognizing (%s/%s) ...", i, len(df.index))
 
             preds = self._model.predict_proba(vec)[0]

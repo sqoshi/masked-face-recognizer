@@ -25,6 +25,7 @@ class Embedder:
             swapRB=True,
             crop=False,
         )
+
         self._embedder.setInput(face_blob)
         vec = self._embedder.forward()
         return vec
