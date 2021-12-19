@@ -15,13 +15,13 @@ class SVMTrainer(Trainer):
         if svm_config is None:
             svm_config = {
                 "C": 1.0,
-                "kernel": "poly",
+                "kernel": "linear",
                 "degree": 5,
                 "probability": True,
                 "random_state": True,
             }
         model = SVC(**svm_config)
-        self._labels = None  # type: ignore
+        self._labels = []  # type: ignore
         super().__init__(model, embeddings)
 
     def train(self) -> ModelType:

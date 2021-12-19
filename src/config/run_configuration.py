@@ -25,22 +25,22 @@ class Configuration:  # pylint:disable=too-many-instance-attributes
     """
 
     def __init__(  # pylint:disable=too-many-arguments
-        self,
-        dataset_path: str,
-        split_ratio: float,
-        personal_images_quantity: int = 1,  # default value selects
-        equal_piqs: bool = False,
-        skip_unknown: bool = False,
-        identities_limit: Optional[int] = None,
-        landmarks_detection: bool = True,
-        test_set_modifications: Optional[
-            Union[Tuple[Any, Any], DatasetModifications]
-        ] = None,
-        train_set_modifications: Optional[
-            Union[Tuple[Any, Any], DatasetModifications]
-        ] = None,
-        name: Optional[str] = None,
-        svm_config: Optional[Dict[str, Any]] = None,
+            self,
+            dataset_path: str,
+            split_ratio: float,
+            personal_images_quantity: int = 1,  # default value selects
+            equal_piqs: bool = False,
+            skip_unknown: bool = False,
+            identities_limit: Optional[int] = None,
+            landmarks_detection: bool = False,
+            test_set_modifications: Optional[
+                Union[Tuple[Any, Any], DatasetModifications]
+            ] = None,
+            train_set_modifications: Optional[
+                Union[Tuple[Any, Any], DatasetModifications]
+            ] = None,
+            name: Optional[str] = None,
+            svm_config: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.dataset_path: str = dataset_path
         self.split_ratio: float = split_ratio
@@ -81,22 +81,22 @@ class Configuration:  # pylint:disable=too-many-instance-attributes
 
     @staticmethod
     def create_modifications(
-        modifications: Union[Tuple[Any, Any], DatasetModifications]
+            modifications: Union[Tuple[Any, Any], DatasetModifications]
     ) -> Optional[DatasetModifications]:
         """Unifies modification passed in different dat structures to DatasetModifications obj."""
         if isinstance(modifications, tuple):
             return DatasetModifications(*modifications)
-        if isinstance(modifications, DatasetModifications):
+        elif isinstance(modifications, DatasetModifications):
             return modifications
-        if modifications is None:
+        elif modifications is None:
             return DatasetModifications(0.0, True, 1)
         raise TypeError("Tuple and DatasetModifications is only accepted.")
 
     def as_dict(self) -> Dict[str, Any]:
         """Dictionary with configuration"""
-        return {
+        preconf = {
             "dataset_path": self.dataset_path,
-            "personal_images_quantity": self.personal_images_quantity,
+            "personal_images_quantity": str(self.personal_images_quantity),
             "equal_piqs": self.equal_piqs,
             "identities_limit": self.identities_limit,
             "split_ratio": self.split_ratio,
@@ -105,8 +105,10 @@ class Configuration:  # pylint:disable=too-many-instance-attributes
             "modifications": {
                 "train": namedtuple_asdict(self.modifications.train),
                 "test": namedtuple_asdict(self.modifications.test),
-            },
+            }
         }
+        logger.info("Current config: ", preconf)
+        return preconf
 
     def to_json(self, fp: Union[Path, str]) -> None:
         """Save configuration as json."""

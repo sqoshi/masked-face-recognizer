@@ -27,6 +27,7 @@ def investigate(
     research_group: str,
     subgroup_dir: str = "",
 ) -> None:
+    """Running learning procedure for each element in list."""
     for config in analysis_list:
         if isinstance(config, Configuration):
             subdir = (
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 
     analyzer = Runner()
 
-    configurator = Configurator(datasets[-1])  # pass path to your dataset here
+    configurator = Configurator(datasets[0])  # pass path to your dataset here
     configurator.push(configurator.default())  # push config to a configurator, examples in class
 
     investigate(configurator.get_config_queue(), str(int(start)))

@@ -183,9 +183,9 @@ class Configurator:
             name="no_modifications",
             dataset_path=self.dataset_path,
             split_ratio=0.6,
-            # personal_images_quantity=20,
-            # identities_limit=50,
-            # equal_piqs=True
+            personal_images_quantity=20,
+            identities_limit=20,
+            equal_piqs=True
         )
 
     def masked_test_set(self) -> Configuration:
