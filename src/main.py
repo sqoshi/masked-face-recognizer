@@ -1,63 +1,65 @@
 import logging
 import os
 import time
+from typing import List, Union
 
 import coloredlogs
 
-from research_configurators.analysis_config import AnalysisConfig
-from research_configurators.analysis_config_factory import AnalysisConfigFactory
-from analyzer import Analyzer
-from research_configurators.experiment import Experiment
+from runner import Runner
+from config.run_configuration import Configuration
+from config.configurator import Configurator
+from config.grouped_config import GroupConfiguration
 from settings import output
 
 logging.basicConfig(filename="masked_face_recognizer.log")
 logger = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG")
 
-datasets = [
-    # "/home/piotr/Documents/bsc-thesis/datasets/test"
-    f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/original',
-    f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/celeba'
-]
 
-
-def mkdir(path):
+def mkdir(path: str) -> None:
+    """Create directory if not exists."""
     if not os.path.exists(path):
         os.makedirs(path)
 
 
-def investigate(analysis_list, research_group, subgroup_dir=""):
+def investigate(
+    analysis_list: List[Union[GroupConfiguration, Configuration]],
+    research_group: str,
+    subgroup_dir: str = "",
+) -> None:
     for config in analysis_list:
-        if isinstance(config, AnalysisConfig):
-            subdir = output / config.get_dataset_name() / research_group / subgroup_dir / config.name
+        if isinstance(config, Configuration):
+            subdir = (
+                output
+                / config.get_dataset_name()
+                / research_group
+                / subgroup_dir
+                / config.name
+            )
             analyzer.run(config)
             analyzer.save(subdir, config)
             analyzer.reset()
-        elif isinstance(config, Experiment):
+        elif isinstance(config, GroupConfiguration):
             investigate(config, research_group, subgroup_dir=config.name)
 
 
 if __name__ == "__main__":
     logger.info("Program started.")
     start = time.time()
+
     mkdir(output)
-    analyzer = Analyzer()
+    datasets = [
+        # "/home/piotr/Documents/bsc-thesis/datasets/test"
+        f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/original',
+        f'/home/{os.environ["USER"]}/Documents/bsc-thesis/datasets/celeba',
+    ]
 
-    acf = AnalysisConfigFactory(datasets[-1])
+    analyzer = Runner()
 
-    investigate(acf.research_path(), str(int(start)))
+    configurator = Configurator(datasets[-1])  # pass path to your dataset here
+    configurator.push(configurator.default())  # push config to a configurator, examples in class
+
+    investigate(configurator.get_config_queue(), str(int(start)))
 
     logger.info("Program finished.")
     logger.info("--- %s minutes ---" % ((time.time() - start) / 60))
-
-# researches list:
-# 1. default - no modifications
-# 2. masked test set:
-#   1. influence of masked images ratio in train set with same mask [0.2,0.5,0.7,1.0]
-#   2. influence of extending train set by masked images / modifying inplace [inplace vs extended]
-#   3. influence of adding unknown identity [ skip unknown personality ]
-#   4. influence of mixing different masks [alternately(grey, blue)]
-#   5. influence of using black boxes instead of masks
-#   6. influence of extracting embeddings only from characteristic points. [must be in place] <- #TODO[blob]
-#   7. influence of extracting embeddings only from  whole image.
-#

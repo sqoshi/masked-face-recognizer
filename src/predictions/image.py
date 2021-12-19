@@ -1,12 +1,16 @@
 from collections import namedtuple
-from typing import Optional
+from typing import Any, Optional, Tuple
 
 import cv2
 import numpy as np
 from mask_imposer import MaskImposer
+from numpy.typing import NDArray
+
+FakeImage = namedtuple("FakeImage", "obj name")
 
 
-def rgba2rgb(rgba):
+def rgba2rgb(rgba: NDArray[Any]) -> NDArray[Any]:
+    """Converts rgba image to rgb."""
     row, col, ch = rgba.shape
     if ch == 3:
         return rgba
@@ -19,14 +23,20 @@ def rgba2rgb(rgba):
     return np.asarray(rgb, dtype="uint8")
 
 
-FakeImage = namedtuple("FakeImage", "obj name")
-
-
 class Image:
+    """Class representing image and its properties.
+    Gives possibility to mask image with imposer.
+    """
+
     mask_index = 1
     mask_imposer: MaskImposer = MaskImposer(mask_index)
 
-    def __init__(self, path: str, identity: Optional[str] = None, size=(96, 96)) -> None:
+    def __init__(
+        self,
+        path: str,
+        identity: Optional[str] = None,
+        size: Tuple[int, int] = (96, 96),
+    ) -> None:
         self.obj = cv2.imread(path)
         self.identity = identity
         self.path = path
@@ -35,12 +45,13 @@ class Image:
         self.masked_obj = None
 
     def switch_mask_imposer_mask(self, bundled_mask_set_index: int) -> None:
+        """Switches bundled mask image in mask imposer to index."""
         # mask imposer get index function is required to opt usage.
         if self.mask_index != bundled_mask_set_index:
             self.mask_imposer.switch_mask(bundled_mask_set_index)
 
-    def get_masked(self, optional_img=None):
-
+    def get_masked(self, optional_img: Optional[Any] = None) -> NDArray[Any]:
+        """Masks image with mask imposer."""
         if optional_img is not None:
             if isinstance(optional_img, tuple):
                 optional_img = FakeImage(*optional_img)
@@ -53,7 +64,8 @@ class Image:
 
         return self.masked_obj
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """String representation of image. (path is unique)"""
         return (
             f"{self.__class__.__name__}(identity={self.identity!r},"
             f" path={self.path!r},"

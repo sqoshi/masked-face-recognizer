@@ -19,9 +19,9 @@ class DatasetConfigBuilder:
         description_fp, identities_fp = None, None
 
         for entity in os.listdir(path):
-            entity = Path(os.path.join(path, entity))
-            if entity.is_file():
-                entity_low = entity.name.lower()
+            entity = Path(os.path.join(path, entity))  # type: ignore
+            if entity.is_file():  # type: ignore
+                entity_low = entity.name.lower()  # type: ignore
                 if "ident" in entity_low:
                     if entity_low.endswith(".csv") or entity_low.endswith(".txt"):
                         logger.info("Identities file '%s' found." % entity)

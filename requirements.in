@@ -10,3 +10,4 @@ dlib==19.22.1
 termcolor==1.1.0
 setuptools~=44.0.0
 git+https://github.com/sqoshi/mask-imposer.git
+git+https://github.com/sqoshi/landmark-predictor.git

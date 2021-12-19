@@ -2,7 +2,6 @@ import logging
 import pickle
 from typing import Any, Dict, List
 
-import cv2
 import dlib
 import pandas as pd
 from numpy.typing import NDArray
@@ -32,7 +31,7 @@ class FaceExtractor(FaceDetector, Embedder):
     def __init__(self) -> None:
         FaceDetector.__init__(self)  # explicit calls without super
         Embedder.__init__(self)
-        self._embeddings = {"vectors": [], "classes": []}
+        self._embeddings: Dict[str, List[Any]] = {"vectors": [], "classes": []}
 
     def reset(self) -> None:
         self._embeddings = {"vectors": [], "classes": []}
@@ -48,12 +47,15 @@ class FaceExtractor(FaceDetector, Embedder):
         with open(output / fn, "wb") as fw:
             pickle.dump(self._embeddings, fw, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def extract(self, df: pd.DataFrame, landmarks_detection) -> Dict[str, List[NDArray[Any]]]:
+    def extract(
+        self, df: pd.DataFrame, landmarks_detection: bool
+    ) -> Dict[str, List[NDArray[Any]]]:
         """Extracting embeddings from loaded images."""
         logger.info("Extracting embeddings.")
         for i, (vec, img) in enumerate(
-                self.vector_generator(df, self.vector, landmarks_detection)):
-            logger.info(f"Extracting (%s/%s) ...", i, len(df.index))
+            self.vector_generator(df, self.vector, landmarks_detection)
+        ):
+            logger.info("Extracting (%s/%s) ...", i, len(df.index))
             embeddings_vec = vec.flatten()
             self._upload_embeddings(img.identity, embeddings_vec)
 
