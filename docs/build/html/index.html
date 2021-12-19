@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Masked Face Recognizer’s documentation! &mdash; Masked Face Recognizer 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> Masked Face Recognizer
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Masked Face Recognizer’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#readme">Readme</a></li>
+<li><a class="reference internal" href="#masked-face-recognizer">Masked Face Recognizer</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
+<li><a class="reference internal" href="#id1">Introduction</a></li>
+<li><a class="reference internal" href="#id2">Installation</a></li>
+<li><a class="reference internal" href="#id3">Usage</a><ul>
+<li><a class="reference internal" href="#id4">Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">General</a><ul>
+<li><a class="reference internal" href="#id6">Accepted datasets structures</a></li>
+<li><a class="reference internal" href="#id7">Openface &lt;&gt;</a></li>
+<li><a class="reference internal" href="#id8">Train phase</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">Code Example</a></li>
+<li><a class="reference internal" href="#id10">Results visualization</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Masked Face Recognizer</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>Welcome to Masked Face Recognizer’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-masked-face-recognizer-s-documentation">
+<h1>Welcome to Masked Face Recognizer’s documentation!<a class="headerlink" href="#welcome-to-masked-face-recognizer-s-documentation" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+<section id="readme">
+<h1>Readme<a class="headerlink" href="#readme" title="Permalink to this headline"></a></h1>
+</section>
+<section id="masked-face-recognizer">
+<h1>Masked Face Recognizer<a class="headerlink" href="#masked-face-recognizer" title="Permalink to this headline"></a></h1>
+<p>Project is a part of series related with my Bachelor of Science Thesis research.</p>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#introduction">Introduction</a></p></li>
+<li><p><a class="reference external" href="#installation">Installation</a></p></li>
+<li><p><a class="reference external" href="#usage">Usage</a></p>
+<ul>
+<li><p><a class="reference external" href="#configuration">Configuration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#general">General</a></p>
+<ul>
+<li><p><a class="reference external" href="#accepted-datasets-structures">Accepted datasets structures</a></p></li>
+<li><p><a class="reference external" href="#openface">Openface</a></p></li>
+<li><p><a class="reference external" href="#train-phase">Train phase</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#code-example">Code Example</a></p></li>
+<li><p><a class="reference external" href="#results-visualization">Results visualization</a></p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Introduction<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<p>Face recognizer in terms of machine learning is a model which takes images as an input and
+recognizes person who is in it. This program requires only clean dataset with frontal faces as
+CelebA, the dataset is dynamically modified accordingly with input Configuration, has also the
+possibility to perform multiple learning process and create multiple models. Process is fully
+automated and to run program we need to specify the path to dataset and configuration or series of
+configurations which program should perform in <code class="docutils literal notranslate"><span class="pre">src/main.py</span></code>.</p>
+</section>
+<section id="id2">
+<h2>Installation<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install -r requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>Usage<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
+<p>Program requires two things to run.</p>
+<ol class="arabic simple">
+<li><p>User need to manually find a dataset with frontal faces and download it on local machine.</p></li>
+<li><p>User need to configure which modifications such as dataset reading limitations, learning
+procedure modifications and used model structure.</p></li>
+</ol>
+<p>To achieve above requirements’ user need to pass path to a dataset in <code class="docutils literal notranslate"><span class="pre">src/main.py</span></code> and configure
+in which way should model be learned.</p>
+<section id="id4">
+<h3>Configuration<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<p>To configure user need to push configuration such as in below example. Default config is a config
+without modification.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">configurator</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># pass path to your dataset here</span>
+<span class="n">configurator</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">configurator</span><span class="o">.</span><span class="n">default</span><span class="p">())</span>  <span class="c1"># push config to a configurator, examples in class</span>
+</pre></div>
+</div>
+<p>Configuration examples are available in Configurator docstrings, push maybe also achieved like
+that:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">configurator</span><span class="o">.</span><span class="n">push</span><span class="p">(</span>
+    <span class="n">Configuration</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="si">}</span><span class="s2">p_masked_train_set&quot;</span><span class="p">,</span>
+        <span class="n">dataset_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">,</span>
+        <span class="n">split_ratio</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">personal_images_quantity</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">identities_limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">equal_piqs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">train_set_modifications</span><span class="o">=</span><span class="n">DatasetModifications</span><span class="p">(</span>
+            <span class="n">mask_ratio</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">MaskingStrategy</span><span class="o">.</span><span class="n">alternately</span>
+        <span class="p">),</span>
+        <span class="n">test_set_modifications</span><span class="o">=</span><span class="n">DatasetModifications</span><span class="p">(</span>
+            <span class="n">mask_ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">MaskingStrategy</span><span class="o">.</span><span class="n">alternately</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Configuration arguments description:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># path to a dataset</span>
+<span class="n">split_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>  <span class="c1"># ratio in which dataset will be split into a train and test set</span>
+<span class="n">personal_images_quantity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># reading limitation - that a number of photos per person read</span>
+<span class="n">equal_piqs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># if true all people will have exactly personal_images_quantity per person</span>
+<span class="n">skip_unknown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># skip personalities without unknown identity</span>
+<span class="n">identities_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># read only identities_limit identities from database</span>
+<span class="n">landmarks_detection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># create embeddings vector from visible landmarks instead of whole image</span>
+<span class="n">test_set_modifications</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatasetModifications</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="n">train_set_modifications</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatasetModifications</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># set configuration name such as default</span>
+<span class="n">svm_config</span><span class="p">:</span> <span class="n">SVMStructure</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># model structure as used kernel and other parameters</span>
+</pre></div>
+</div>
+<p>SVM available parametrs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="n">SVMStructure</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sklearn.svm.SVC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">C</span><span class="p">,</span>
+        <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span>
+        <span class="s2">&quot;probability&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span>
+        <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+        <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">coef0</span><span class="p">,</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+        <span class="s2">&quot;shrinking&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">shrinking</span><span class="p">,</span>
+        <span class="s2">&quot;class_weight&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">class_weight</span><span class="p">,</span>
+        <span class="s2">&quot;verbose&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+        <span class="s2">&quot;decision_function_shape&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">decision_function_shape</span><span class="p">,</span>
+        <span class="s2">&quot;break_ties&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">break_ties</span><span class="p">,</span>
+        <span class="s2">&quot;random_state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Dataset available modifications:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DatasetModifications</span><span class="p">(</span>
+    <span class="n">mask_ratio</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>  <span class="c1"># if true then 70% of images from set will be masked</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="c1"># if false then images in set will be masked, else set will be extended by copies of masked images</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">MaskingStrategy</span><span class="o">.</span><span class="n">alternately</span>
+    <span class="c1"># mask images with all mask available from mask_imposer alternately</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id5">
+<h2>General<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h2>
+<section id="id6">
+<h3>Accepted datasets structures<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
+<p>Datasets maybe kept in two different structures:</p>
+<ol class="arabic simple">
+<li><p>Grouped - where subdirectories name determine identity on images inside.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>grouped_dataset_root_directory/
+│
+├── person1_dir/
+│      ├── img1.png
+│      ├── img2.png
+│      └── img3.png
+│
+├── person2_dir/
+│      ├── img1.png
+│      ├── img2.png
+│      └── img3.png
+│
+└── description.(md|txt) [OPTIONAL]
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Mixed - where identities must be determined in <code class="docutils literal notranslate"><span class="pre">identities.(csv|txt)</span></code> file.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mixed_dataset_root_directory/
+│
+├── images_directory/
+│      ├── img1.png
+│      ├── img2.png
+│      ├── img3.png
+│      └── img4.png
+│
+├── identities.(csv|txt)
+│
+└── description.(md|txt) [OPTIONAL]
+</pre></div>
+</div>
+<p>Identities file must contain minimally two columns with image name in first column and identity in
+second.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">000001.jpg jacob</span>
+<span class="l l-Scalar l-Scalar-Plain">000002.jpg kate</span>
+<span class="l l-Scalar l-Scalar-Plain">000003.jpg jacob</span>
+<span class="l l-Scalar l-Scalar-Plain">000004.jpg peter</span>
+</pre></div>
+</div>
+<p><em>*Filename not absolute file path!.</em>*</p>
+</section>
+<section id="id7">
+<h3><a class="reference internal" href="#id7">Openface &lt;&gt;</a><a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
+<p>Dataset is being split with given ratio to train and test sets.</p>
+<p>When dataset has been read program iterates over all images, detects rectangle with face inside,
+crops that part and using openface <code class="docutils literal notranslate"><span class="pre">nn4.small2.v1.t7</span></code>
+model transforming images to 128-D flat vectors (embeddings).</p>
+</section>
+<section id="id8">
+<h3>Train phase<a class="headerlink" href="#id8" title="Permalink to this headline"></a></h3>
+<p>Model is trained on train set. For now program allow use only <code class="docutils literal notranslate"><span class="pre">sklearn.svm.SVC</span></code> model which takes
+our embeddings as an input. Model is saved in <code class="docutils literal notranslate"><span class="pre">.pickle</span></code> file.</p>
+<p>So if you have given 3 identities than result of prediction is a list of probabilities, where the
+highest means <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">person</span> <span class="pre">has</span> <span class="pre">the</span> <span class="pre">biggest</span> <span class="pre">probability</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">on</span> <span class="pre">that</span> <span class="pre">image.</span></code>.</p>
+<p>Example</p>
+<p>model has been trained on identities:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[kate,</span> <span class="pre">jacob,</span> <span class="pre">peter]</span></code></p>
+<p>output:
+<code class="docutils literal notranslate"><span class="pre">[0.1,</span> <span class="pre">0.3,</span> <span class="pre">0.6]</span></code></p>
+<p>What means that the most probably peter is on input image.</p>
+</section>
+</section>
+<section id="id9">
+<h2>Code Example<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">landmarks_detection</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;Extracting embeddings from loaded images.&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting embeddings.&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector_generator</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">,</span> <span class="n">landmarks_detection</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting (</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">) ...&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">embeddings_vec</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_embeddings</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span> <span class="n">embeddings_vec</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embeddings</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h2>Results visualization<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h2>
+<p>Results may be visualized by <a class="reference external" href="https://github.com/sqoshi/masked-face-recognizer-frontend">MFR-viz</a>.</p>
+<p>Before launching MFR-viz, please deploy results with <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">deploy.sh</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Piotr Popis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
