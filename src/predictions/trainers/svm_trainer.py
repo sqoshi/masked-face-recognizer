@@ -1,7 +1,9 @@
 import logging
+from typing import Any, Dict, Optional
 
 from sklearn.svm import SVC
 
+from predictions.face_recognizer import ModelType
 from predictions.trainers.trainer import Trainer
 from settings import output
 
@@ -9,22 +11,35 @@ logger = logging.getLogger(__name__)
 
 
 class SVMTrainer(Trainer):
-    def __init__(self, embeddings):
-        model = SVC(C=1.0, kernel="linear", probability=True)
+    def __init__(self, embeddings: str, svm_config: Optional[Dict[str, Any]]) -> None:
+        if svm_config is None:
+            svm_config = {
+                "C": 1.0,
+                "kernel": "poly",
+                "degree": 5,
+                "probability": True,
+                "random_state": True,
+            }
+        model = SVC(**svm_config)
+        self._labels = None  # type: ignore
         super().__init__(model, embeddings)
 
-    def train(self):
-        logger.info("Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings))
-        self._labels = self.label_encoder.fit_transform(self._labels)
+    def train(self) -> ModelType:
+        logger.info(
+            "Training sklearn-svc model with %s 128-D vectors." % len(self._embeddings)
+        )
+        self._labels = self.label_encoder.fit_transform(self._labels)  # type: ignore
         self._model.fit(self._embeddings, self._labels)
 
         return self._model
 
-    def store_model(self, fn="sklearn_svm_svc_model.pickle"):
+    def store_model(self, fn: str = "sklearn_svm_svc_model.pickle") -> None:
+        """Saves model as pickle in output directory."""
         logger.info("Saving model in %s." % (output / fn))
         super().store_model(fn)
 
-    def get_model_details(self):
+    def get_model_details(self) -> Dict[str, Any]:
+        """Gets model structure details as kernel function."""
         return {
             "name": "sklearn.svm.SVC",
             "details": {

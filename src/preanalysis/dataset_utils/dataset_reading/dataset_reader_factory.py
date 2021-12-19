@@ -1,14 +1,18 @@
 import logging
 import os
 from enum import Enum
-from typing import Callable, List
+from typing import Callable, Optional, Tuple
 
 import pandas as pd
 from imutils.paths import list_images
 
-from analysis_config import AnalysisConfig
-from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import DatasetConfig
-from preanalysis.dataset_utils.dataset_reading.reading_limitations import limit_dataframe
+from preanalysis.dataset_utils.dataset_configuration.dataset_config_builder import (
+    DatasetConfig,
+)
+from preanalysis.dataset_utils.dataset_reading.reading_limitations import (
+    limit_dataframe,
+)
+from config.run_configuration import Configuration
 
 logger = logging.getLogger(__name__)
 
@@ -30,18 +34,21 @@ class ReaderFactory:
     without limitations.
     """
 
-    def __init__(self, columns: List[str] = ("filename", "identity")) -> None:
+    def __init__(self, columns: Tuple[str, str] = ("filename", "identity")) -> None:
         self.columns = columns
 
     def read(
-        self, dc: DatasetConfig, analysis_config: AnalysisConfig, strategy: Strategy = None
+        self,
+        dc: DatasetConfig,
+        analysis_config: Configuration,
+        strategy: Optional[Strategy] = None,
     ) -> pd.DataFrame:
         """Read dataset with n images per identity with special strategy."""
         strategy = auto_strategy(dc) if strategy is None else strategy
         reader = self._get_reader(strategy)
         return reader(dc, analysis_config)
 
-    def _get_reader(self, strategy: Strategy = None) -> Callable:
+    def _get_reader(self, strategy: Optional[Strategy] = None) -> Callable:  # type: ignore
         """Selects reading methodology by strategy."""
         if strategy == Strategy.grouped:
             return self._read_grouped
@@ -49,7 +56,9 @@ class ReaderFactory:
             return self._read_mixed
         raise ValueError(strategy)
 
-    def _read_grouped(self, dc: DatasetConfig, analysis_config: AnalysisConfig) -> pd.DataFrame:
+    def _read_grouped(
+        self, dc: DatasetConfig, analysis_config: Configuration
+    ) -> pd.DataFrame:
         """Reading n images per identity in identity-grouped structure.
 
         Example structure:
@@ -72,7 +81,9 @@ class ReaderFactory:
         dataset_df = limit_dataframe(dataset_df, analysis_config)
         return dataset_df
 
-    def _read_mixed(self, dc: DatasetConfig, analysis_config: AnalysisConfig) -> pd.DataFrame:
+    def _read_mixed(
+        self, dc: DatasetConfig, analysis_config: Configuration
+    ) -> pd.DataFrame:
         """Reading n images per identity in mixed images directory.
 
         Example structure:
@@ -84,7 +95,9 @@ class ReaderFactory:
             ...
         """
         logger.info("Reading dataset mixed with identities in .csv file.")
-        attrs_df = pd.read_csv(dc.identities_fp, sep=" ", index_col=False, names=self.columns)
+        attrs_df = pd.read_csv(
+            dc.identities_fp, sep=" ", index_col=False, names=self.columns
+        )
         dataset_df = limit_dataframe(attrs_df, analysis_config)
         dataset_df["filename"] = dataset_df["filename"].apply(
             lambda x: os.path.join(dc.directory_fp, str(x))

@@ -1,0 +1,19 @@
+name: Python Lint
+
+on: [ pull_request ]
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ricardochaves/python-lint@v1.4.0
+        with:
+          python-root-list: 'src'
+          use-black: false
+          use-isort: false
+          use-mypy: false
+          extra-pycodestyle-options: "--max-line-length=99"
+

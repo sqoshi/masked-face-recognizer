@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src package &mdash; Masked Face Recognizer 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Masked Face Recognizer
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#src-main-module">src.main module</a></li>
+<li><a class="reference internal" href="#src-runner-module">src.runner module</a></li>
+<li><a class="reference internal" href="#module-src.settings">src.settings module</a></li>
+<li><a class="reference internal" href="#module-src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Masked Face Recognizer</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>src package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/src.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src-package">
+<h1>src package<a class="headerlink" href="#src-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src.config.html">src.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#src-config-configurator-module">src.config.configurator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#src-config-grouped-config-module">src.config.grouped_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#module-src.config.mask_strategy">src.config.mask_strategy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#module-src.config.run_configuration">src.config.run_configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.config.html#module-src.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src.preanalysis.html">src.preanalysis package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.preanalysis.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.preanalysis.dataset_utils.html">src.preanalysis.dataset_utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.preanalysis.dataset_utils.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.preanalysis.dataset_utils.html#module-src.preanalysis.dataset_utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.preanalysis.html#module-src.preanalysis">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src.predictions.html">src.predictions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.predictions.trainers.html">src.predictions.trainers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.predictions.trainers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.predictions.trainers.html#src-predictions-trainers-svm-trainer-module">src.predictions.trainers.svm_trainer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.predictions.trainers.html#src-predictions-trainers-trainer-module">src.predictions.trainers.trainer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.predictions.trainers.html#module-src.predictions.trainers.trainer_factory">src.predictions.trainers.trainer_factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.predictions.trainers.html#module-src.predictions.trainers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#module-src.predictions.embedder">src.predictions.embedder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#src-predictions-extractor-module">src.predictions.extractor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#src-predictions-face-detector-module">src.predictions.face_detector module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#src-predictions-face-recognizer-module">src.predictions.face_recognizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#module-src.predictions.image">src.predictions.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.predictions.html#module-src.predictions">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="src-main-module">
+<h2>src.main module<a class="headerlink" href="#src-main-module" title="Permalink to this headline"></a></h2>
+</section>
+<section id="src-runner-module">
+<h2>src.runner module<a class="headerlink" href="#src-runner-module" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-src.settings">
+<span id="src-settings-module"></span><h2>src.settings module<a class="headerlink" href="#module-src.settings" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-src">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Piotr Popis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

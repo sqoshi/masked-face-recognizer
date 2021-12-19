@@ -1,0 +1,2 @@
+INFO:landmarks_predictor.landmarks_predictor:Looking for shape predictor in '/home/piotr/Documents/bsc-thesis/mask-decoder/venv/lib/python3.8'
+INFO:landmarks_predictor.landmarks_predictor:Predictor found in '/home/piotr/Documents/bsc-thesis/mask-decoder/venv/lib/python3.8/site-packages/mask_imposer/shape_predictor_68_face_landmarks.dat'

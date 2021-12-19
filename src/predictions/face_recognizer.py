@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Union
+from typing import Any, Dict, Union
 
 import numpy as np
 import pandas as pd
@@ -19,7 +19,7 @@ ModelType = Union[SVC]
 class FaceRecognizer(FaceDetector, Embedder):
     """Class responsible for recognize classes on images."""
 
-    def __init__(self, model, label_encoder: LabelEncoder) -> None:
+    def __init__(self, model: ModelType, label_encoder: LabelEncoder) -> None:
         FaceDetector.__init__(self)
         Embedder.__init__(self)
         self._model = model
@@ -32,18 +32,21 @@ class FaceRecognizer(FaceDetector, Embedder):
         }
 
     @property
-    def stats(self):
-        return self.statistics["stats"]
+    def stats(self) -> Dict[Any, Any]:
+        """Counted classifications dictionary."""
+        return self.statistics["stats"]  # type:ignore
 
-    def personal_stats(self, identity):
-        if identity not in self.statistics["personal_stats"].keys():
-            self.statistics["personal_stats"][identity] = {
+    def personal_stats(self, identity: str) -> Dict[Any, Any]:
+        """Statistics for single identity."""
+        if identity not in self.statistics["personal_stats"].keys():  # type:ignore
+            self.statistics["personal_stats"][identity] = {  # type:ignore
                 x: 0 for x in ("perfect", "top5", "fail")
             }
-        return self.statistics["personal_stats"][identity]
+        return self.statistics["personal_stats"][identity]  # type:ignore
 
     @property
-    def accuracy(self):
+    def accuracy(self) -> Any:
+        """Computer accuracy value."""
         return self.statistics["accuracy"]
 
     def update_stats(
@@ -70,21 +73,27 @@ class FaceRecognizer(FaceDetector, Embedder):
         stats[key] += 1
         self.personal_stats(correct_identity)[key] += 1
 
-    def print_stats(self, stats) -> None:
+    def print_stats(self, stats: Dict[str, Any]) -> None:
         """Prints simple statistics."""
         cprint(f"{stats['perfect']} perfects.", "green")
         cprint(f"{stats['top5']} top5.", "yellow")
         cprint(f"{stats['fail']} fails.", "red")
         cprint(f"Model accuracy [perfect]: {self.accuracy['perfect']}", "green")
+        logger.info(f"Model accuracy [perfect]: {self.accuracy['perfect']}")
         cprint(f"Model accuracy [top5+perfect]: {self.accuracy['top5']}", "green")
+        logger.info(f"Model accuracy [top5+perfect]: {self.accuracy['top5']}")
 
-    def compute_accuracy(self, stats) -> None:
+    def compute_accuracy(self, stats: Dict[Any, Any]) -> None:
         """Compute overall model accuracy."""
         tests_number = sum(stats.values())
-        self.accuracy["top5"] = round((stats["perfect"] + stats["top5"]) / tests_number * 100, 3)
+        self.accuracy["top5"] = round(
+            (stats["perfect"] + stats["top5"]) / tests_number * 100, 3
+        )
         self.accuracy["perfect"] = round((stats["perfect"]) / tests_number * 100, 3)
 
-    def save_stats(self, stats_fp: str = "statistics.csv", append_accuracy=False) -> None:
+    def save_stats(
+        self, stats_fp: str = "statistics.csv", append_accuracy: bool = False
+    ) -> None:
         """Saves statistic in csv file."""
         df = pd.DataFrame.from_dict(self.statistics["personal_stats"]).T
         if append_accuracy:
@@ -93,15 +102,16 @@ class FaceRecognizer(FaceDetector, Embedder):
             df["top5_accuracy"] = round((df["perfect"] + df["top5"]) / sm * 100, 3)
         df.to_csv(output / stats_fp)
 
-    def recognize(self, df: pd.DataFrame) -> pd.DataFrame:
+    def recognize(self, df: pd.DataFrame, landmarks_detection: bool) -> pd.DataFrame:
         """Classifies identities on images and collects statistics."""
-        for i, (vec, img) in enumerate(self.vector_generator(df, self.vector)):
-            logger.info(f"Recognizing (%s/%s) ...", i, len(df.index))
+        for i, (vec, img) in enumerate(
+            self.vector_generator(df, self.vector, landmarks_detection)
+        ):
+            logger.info("Recognizing (%s/%s) ...", i, len(df.index))
 
             preds = self._model.predict_proba(vec)[0]
             self.update_stats(preds, img.identity, self.stats)
 
         self.compute_accuracy(self.stats)
         self.print_stats(self.stats)
-        # self.save_stats()
         return pd.DataFrame.from_dict(self.statistics["personal_stats"]).T

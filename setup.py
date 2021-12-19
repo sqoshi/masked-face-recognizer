@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="Face Recognizer",
@@ -18,6 +18,6 @@ setup(
         "imutils==0.5.4",
         "pandas>=1.3.2",
         "matplotlib==3.4.3",
-        "scikit-learn==0.24.2"
+        "scikit-learn==0.24.2",
     ],
 )
